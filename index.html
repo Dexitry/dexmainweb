@@ -17,12 +17,14 @@
             background-color: rgb(0,0,0);
             color: white;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             min-height: 100dvh;
             overflow-x: hidden;
             font-family: "Radio Canada Big", sans-serif;
             position: relative;
+            padding: 3rem 0;
         }
 
         #mouse-glow {
@@ -36,6 +38,15 @@
             z-index: 1;
         }
 
+        .content-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 100%;
+            z-index: 10;
+        }
+
         .wrapper {
             width: 90%;
             max-width: 650px;
@@ -46,7 +57,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-            z-index: 10;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
                         border-color 0.4s ease, 
                         box-shadow 0.4s ease;
@@ -74,17 +84,13 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.8);
             background-blend-mode: darken;
             background-size: cover;
             background-position: center;
-            filter: blur(8px) grayscale(100%);
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out;
-        }
-
-        .bg-layer.active {
-            opacity: 1;
+            filter: blur(3px) grayscale(20%);
+            /* Static background setup */
+            background-image: url('https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2000');
         }
 
         .title-container {
@@ -314,109 +320,95 @@
 
         .sub {
             font-size: 0.82rem;
-            color: rgb(60, 60, 60);
+            color: rgb(75, 75, 75);
             margin-top: 1.5rem;
             margin-bottom: 0;
         }
 
-        .banner-corner {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
-            z-index: 100;
-            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-            opacity: 0;
-        }
-
-        .my-banner {
+        .banner-shelf {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 176px;
-            height: 62px;
-            padding: 0 4px 0 10px;
-            box-sizing: border-box;
-            text-decoration: none;
-            border: 3px solid #333; 
-            background-color: #1a1a1a;
-            background-image: radial-gradient(#0a0a0a 25%, transparent 25%);
-            background-size: 4px 4px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            transition: transform 0.2s ease, border-color 0.2s ease;
-            image-rendering: pixelated;
-        }
-        .my-banner:hover {
-            transform: translateY(-1px);
-            border-color: #555;
-        }
-
-        .banner-text {
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            text-shadow: 1px 1px 1px #000;
-            line-height: 1;
-            padding-right: 4px;
+            gap: 20px;
+            margin-top: 2rem;
+            z-index: 100;
+            width: 100%;
         }
 
-        .banner-title {
-            font-size: 1.25rem;
-            font-weight: 900;
-            letter-spacing: -1px;
-            text-transform: lowercase;
+        .banner-unit {
+            position: relative;
+            width: 160px;
+            height: 56px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .banner-sub {
-            font-size: 0.44rem;
-            font-weight: bold;
-            color: #aaa;
-            letter-spacing: 0.2px;
-            text-transform: uppercase;
-            margin-top: 3px;
-            line-height: 1.1;
-            max-width: 100px;
+        .my-banner-img, .peebly-banner-img {
+            display: block;
+            width: 160px;
+            height: 56px;
+            border-radius: 6px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            transition: transform 0.2s ease, filter 0.2s ease;
+            object-fit: fill; /* Locks exact bounding layout scales to eradicate slight size changes */
+        }
+        
+        .banner-unit:hover .my-banner-img,
+        .banner-unit:hover .peebly-banner-img {
+            transform: scale(1.025);
         }
 
-        .banner-avatar {
-            width: 50px;
-            height: 58px;
-            object-fit: cover;
-            border-left: 1px solid #222;
-            image-rendering: pixelated;
+        .banner-unit:hover .my-banner-img {
+            filter: brightness(0.25);
         }
 
         .copy-banner-btn {
-            background: rgba(20, 20, 20, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #888;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 10px);
+            height: calc(100% - 10px);
+            background: rgba(25, 25, 25, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            color: #dddddd;
             font-family: inherit;
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
             border-radius: 4px;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            transition: all 0.2s ease;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             user-select: none;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .banner-unit:hover .copy-banner-btn {
+            opacity: 1;
+            pointer-events: auto;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
+        }
+
         .copy-banner-btn:hover {
+            background: rgba(35, 35, 35, 0.95);
+            border-color: rgba(255, 255, 255, 0.6);
             color: #fff;
-            background: rgba(40, 40, 40, 0.9);
-            border-color: rgba(255, 255, 255, 0.2);
         }
+
         .copy-banner-btn.copied {
-            color: #ccc;
-            border-color: #555;
+            border-color: rgba(110, 110, 110, 0.5);
+            background: rgba(40, 40, 40, 0.9);
+            color: #a5a5a5;
         }
 
         @keyframes subtlePulse {
@@ -433,7 +425,7 @@
             .wrapper { padding: 1.8rem; width: 90%; }
             div.head { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
             nav { padding-top: 0; }
-            .banner-corner { position: static; margin-top: 2.5rem; align-items: flex-start; }
+            .banner-shelf { flex-direction: column; gap: 14px; }
         }
     </style>
 </head>
@@ -441,69 +433,74 @@
 
     <div id="mouse-glow"></div>
 
-    <div class="bg-layer active" id="bg1"></div>
-    <div class="bg-layer" id="bg2"></div>
+    <div class="bg-layer"></div>
 
-    <div class="wrapper">
-        <div class="head">
-            <div class="title-container">
-                <h1>dexitry</h1>
-                <div class="minecraft-splash-effect">
-                    Also meet <a href="https://salamithecat.com" target="_blank" class="link-peebly">peebly</a>!
+    <div class="content-area">
+        <div class="wrapper">
+            <div class="head">
+                <div class="title-container">
+                    <h1>dexitry</h1>
+                    <div class="minecraft-splash-effect">
+                        i tend to do hardware-related shit!
+                    </div>
                 </div>
+                
+                <nav>
+                    <a href="https://discord.com/users/989844678536986624" target="_blank">talk with me!</a>
+                    <a href="https://www.instagram.com/dexitry/" target="_blank">instagram</a>
+                </nav>
+            </div>
+
+            <div class="live-status-container">
+                <div class="status-main-line">
+                    <div class="status-dot" id="status-dot"></div>
+                    <div class="live-text" id="live-text">Connecting to sync layer...</div>
+                </div>
+                <div class="status-sub-line" id="status-sub-line">
+                    <div class="equalizer">
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                    </div>
+                    <div class="live-text" id="live-sub-text"></div>
+                </div>
+            </div>
+
+            <p>
+                i used to wrangle servers and hardware in IT, now i just wrangle unemployment. as for games? mainly 
+                <a href="https://osu.ppy.sh/users/17459468" target="_blank" class="link-osu">osu!</a> 
+                and 
+                <a href="https://tracker.gg/lol/profile/riot/Nicotine%20Addict%23FF15/overview" target="_blank" class="link-lol">league of legends</a>.
+            </p>
+
+            <button class="hardware-trigger" onclick="toggleSpecs(this)">
+                <span>▶</span> pc hardware
+            </button>
+            <div class="hardware-specs" id="specs">
+                <div class="spec-label">CPU</div><div>Ryzen 5 5600X</div>
+                <div class="spec-label">GPU 1</div><div>RTX 4060</div>
+                <div class="spec-label">GPU 2</div><div>RX 7600 XT <span class="spec-note">(only used to give my 4060 more power / ram, yes very high-concept IT wizardry)</span></div>
+                <div class="spec-label">RAM</div><div>32GB DDR4 3200MHz</div>
+                <div class="spec-label">Storage</div><div>1 TB KIOXIA SSD <span class="spec-note">(and 2 samsung evo ssds that are like 250gb, just incase i need them)</span></div>
             </div>
             
-            <nav>
-                <a href="https://discord.com/users/989844678536986624" target="_blank">talk</a>
-                <a href="https://www.instagram.com/dexitry/" target="_blank">instagram</a>
-            </nav>
+            <p class="sub">i suck at both of those games btw</p>
         </div>
-
-        <div class="live-status-container">
-            <div class="status-main-line">
-                <div class="status-dot" id="status-dot"></div>
-                <div class="live-text" id="live-text">Connecting to sync layer...</div>
-            </div>
-            <div class="status-sub-line" id="status-sub-line">
-                <div class="equalizer">
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
-                </div>
-                <div class="live-text" id="live-sub-text"></div>
-            </div>
-        </div>
-
-        <p>
-            i used to wrangle servers and hardware in IT, now i just wrangle unemployment. as for games? mainly 
-            <a href="https://osu.ppy.sh/users/17459468" target="_blank" class="link-osu">osu!</a> 
-            and 
-            <a href="https://tracker.gg/lol/profile/riot/Nicotine%20Addict%23FF15/overview" target="_blank" class="link-lol">league of legends</a>.
-        </p>
-
-        <button class="hardware-trigger" onclick="toggleSpecs(this)">
-            <span>▶</span> pc hardware
-        </button>
-        <div class="hardware-specs" id="specs">
-            <div class="spec-label">CPU</div><div>Ryzen 5 5600X</div>
-            <div class="spec-label">GPU 1</div><div>RTX 4060</div>
-            <div class="spec-label">GPU 2</div><div>RX 7600 XT <span class="spec-note">(only used to give my 4060 more power / ram, yes very high-concept IT wizardry)</span></div>
-            <div class="spec-label">RAM</div><div>32GB DDR4 3200MHz</div>
-            <div class="spec-label">Storage</div><div>1 TB KIOXIA SSD <span class="spec-note">(and 2 samsung evo ssds that are like 250gb, just incase i need them)</span></div>
-        </div>
-        
-        <p class="sub">backgrounds dynamically sourced from osu! seasonal art contests.</p>
     </div>
 
-    <div class="banner-corner">
-        <div class="my-banner">
-            <div class="banner-text">
-                <span class="banner-title">dex</span>
-                <span class="banner-sub">i do dumb shit thats hardware related</span>
-            </div>
-            <img src="https://files.catbox.moe/uvov69.png" alt="avatar" class="banner-avatar">
+    <div class="banner-shelf">
+        <div class="banner-unit">
+            <a href="/" id="banner-link">
+                <img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" alt="dexitry" class="my-banner-img">
+            </a>
+            <button class="copy-banner-btn" id="copy-btn" onclick="copyBannerCode()">copy</button>
         </div>
-        <button class="copy-banner-btn" id="copy-btn" onclick="copyBannerCode()">copy</button>
+
+        <div class="banner-unit">
+            <a href="https://salamithecat.com/" target="_blank" rel="noopener noreferrer">
+                <img src="https://salamithecat.com/button.webp" alt="peeblyweeb" class="peebly-banner-img">
+            </a>
+        </div>
     </div>
 
     <script>
@@ -522,64 +519,21 @@
 
         function copyBannerCode() {
             const currentUrl = window.location.origin;
-            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://files.catbox.moe/uvov69.png" width="176" height="62" alt="dexitry"></a>`;
+            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" width="88" height="31" alt="dexitry"></a>`;
             
             navigator.clipboard.writeText(embedString).then(() => {
                 const btn = document.getElementById('copy-btn');
-                btn.innerText = 'copied!';
                 btn.classList.add('copied');
+                btn.innerText = 'thanks!';
+                
                 setTimeout(() => {
                     btn.innerText = 'copy again?';
                     btn.classList.remove('copied');
-                }, 2000);
+                }, 2200);
             }).catch(err => {
-                console.error('Could not copy embed token hook:', err);
+                console.error('Could not copy banner code:', err);
             });
         }
-
-        const bg1 = document.getElementById("bg1");
-        const bg2 = document.getElementById("bg2");
-        let currentBgElement = bg1;
-        
-        const seasonalBgs = [
-            "https://assets.ppy.sh/user-contest-entries/17286/f65a2f08ef895d2fe7098a1e0f405c1cbc6562e8282b0058d12e163639bf013d_opt.jpg",
-            "https://assets.ppy.sh/user-contest-entries/17311/5c0acd6c13b2006931792bd334317c0dac94023b0feef715b30172ba6787cbcd_opt.jpg",
-            "https://assets.ppy.sh/user-contest-entries/17312/46eb143dd726dc2cb2e6425add0cb22b2d13fa5b8eef91b9e8151c2d7220250f_opt.jpg",
-            "https://assets.ppy.sh/user-contest-entries/16084/6ef6cc27d6d5386b864f7b60098df2400e9ec1438fa74136453fa8e71887e14a_opt.jpg"
-        ];
-        
-        let sources = [...seasonalBgs];
-        let lastIndex = -1;
-
-        function setRandomBackground() {
-            if (sources.length <= 1) return;
-            let newIndex;
-            do { newIndex = Math.floor(Math.random() * sources.length); } while (newIndex === lastIndex);
-            lastIndex = newIndex;
-            let nextUrl = sources[newIndex];
-            if (nextUrl.includes('user-contest-entries') && !nextUrl.endsWith('_opt.jpg') && !nextUrl.endsWith('_hd.jpg')) {
-                nextUrl = nextUrl.replace('.jpg', '_opt.jpg');
-            }
-            const img = new Image();
-            img.src = nextUrl;
-            img.onload = () => {
-                const nextBgElement = currentBgElement === bg1 ? bg2 : bg1;
-                nextBgElement.style.backgroundImage = `url('${nextUrl}')`;
-                nextBgElement.classList.add("active");
-                currentBgElement.classList.remove("active");
-                currentBgElement = nextBgElement;
-            };
-        }
-        bg1.style.backgroundImage = `url('${sources[0]}')`;
-        fetch("https://osu.ppy.sh/api/v2/seasonal-backgrounds")
-            .then(res => res.ok ? res.json() : null)
-            .then(data => {
-                if (data && data.backgrounds && data.backgrounds.length > 0) {
-                    sources = data.backgrounds.map(bg => bg.url);
-                    setRandomBackground();
-                }
-            }).catch(() => {});
-        setInterval(setRandomBackground, 7000);
 
         const dot = document.getElementById('status-dot');
         const mainText = document.getElementById('live-text');

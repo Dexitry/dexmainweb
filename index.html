@@ -4,7 +4,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dexitry</title>
+    <title>dex</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
         
@@ -89,7 +89,6 @@
             background-size: cover;
             background-position: center;
             filter: blur(3px) grayscale(20%);
-            /* Static background setup */
             background-image: url('https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2000');
         }
 
@@ -117,14 +116,32 @@
             color: #ccc;
         }
 
-        .link-peebly {
-            color: #ff9f1c !important;
-            text-decoration: underline !important;
-            transition: text-shadow 0.2s ease, color 0.2s ease;
+        [data-tooltip] {
+            position: relative;
         }
-        .link-peebly:hover {
-            color: #ffbf69 !important;
-            text-shadow: 0 0 8px rgba(255, 159, 28, 0.5);
+        [data-tooltip]::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: #111;
+            border: 1px solid #444;
+            color: #eee;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: monospace;
+            z-index: 999;
+        }
+        [data-tooltip]:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
         nav {
@@ -234,6 +251,14 @@
             100% { transform: scaleY(1); }
         }
 
+        .system-clock {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #444;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
         p a {
             text-decoration: none;
             padding-bottom: 2px;
@@ -267,6 +292,12 @@
             color: #e5e5e5;
         }
 
+        .button-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
         .hardware-trigger {
             background: none;
             border: none;
@@ -275,7 +306,6 @@
             font-size: 0.82rem;
             padding: 0;
             cursor: pointer;
-            margin-top: 2rem;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -318,6 +348,64 @@
             margin-left: 0.4rem;
         }
 
+        .term-toggle {
+            background: none;
+            border: none;
+            color: rgb(90, 90, 90);
+            font-family: inherit;
+            font-size: 0.82rem;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s ease;
+        }
+        .term-toggle:hover { color: #bbb; }
+        
+        .terminal-container {
+            max-height: 0;
+            overflow: hidden;
+            background: rgba(12, 12, 12, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s ease, border-color 0.4s;
+            display: flex;
+            flex-direction: column;
+        }
+        .terminal-container.open {
+            max-height: 250px;
+            margin-top: 1rem;
+            border-color: rgba(255, 255, 255, 0.08);
+            padding: 1rem;
+        }
+        .terminal-history {
+            overflow-y: auto;
+            flex-grow: 1;
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+        .terminal-prompt-line {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            color: #ffffff;
+        }
+        .terminal-input {
+            background: none;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            padding: 0;
+        }
+
         .sub {
             font-size: 0.82rem;
             color: rgb(75, 75, 75);
@@ -325,11 +413,13 @@
             margin-bottom: 0;
         }
 
+        /* --- PERFECTED BANNER SHELF --- */
         .banner-shelf {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 24px;
             margin-top: 2rem;
             z-index: 100;
             width: 100%;
@@ -337,27 +427,26 @@
 
         .banner-unit {
             position: relative;
-            width: 160px;
-            height: 56px;
-            border-radius: 6px;
+            display: block;
+            height: 62px; /* Locks all banners to the exact same vertical height */
+        }
+
+        .banner-unit a {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 100%;
         }
 
         .my-banner-img, .peebly-banner-img {
+            height: 100%; /* Fills the 62px locked height */
+            width: auto; /* Scales proportionally */
             display: block;
-            width: 160px;
-            height: 56px;
-            border-radius: 6px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-            transition: transform 0.2s ease, filter 0.2s ease;
-            object-fit: fill; /* Locks exact bounding layout scales to eradicate slight size changes */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
         }
         
         .banner-unit:hover .my-banner-img,
         .banner-unit:hover .peebly-banner-img {
-            transform: scale(1.025);
+            transform: scale(1.04);
         }
 
         .banner-unit:hover .my-banner-img {
@@ -366,28 +455,19 @@
 
         .copy-banner-btn {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(100% - 10px);
-            height: calc(100% - 10px);
-            background: rgba(25, 25, 25, 0.85);
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            color: #dddddd;
-            font-family: inherit;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 15, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            "Radio Canada Big", sans-serif;
             font-size: 0.75rem;
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
             cursor: pointer;
-            border-radius: 4px;
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
             opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-            user-select: none;
-            white-space: nowrap;
+            transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -395,20 +475,16 @@
 
         .banner-unit:hover .copy-banner-btn {
             opacity: 1;
-            pointer-events: auto;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
         }
 
         .copy-banner-btn:hover {
-            background: rgba(35, 35, 35, 0.95);
-            border-color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
             color: #fff;
         }
 
         .copy-banner-btn.copied {
-            border-color: rgba(110, 110, 110, 0.5);
-            background: rgba(40, 40, 40, 0.9);
-            color: #a5a5a5;
+            background: rgba(30, 30, 30, 0.9);
+            color: #888;
         }
 
         @keyframes subtlePulse {
@@ -425,14 +501,14 @@
             .wrapper { padding: 1.8rem; width: 90%; }
             div.head { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
             nav { padding-top: 0; }
-            .banner-shelf { flex-direction: column; gap: 14px; }
+            .button-row { flex-direction: column; gap: 0.8rem; }
+            .banner-shelf { gap: 15px; }
         }
     </style>
 </head>
 <body>
 
     <div id="mouse-glow"></div>
-
     <div class="bg-layer"></div>
 
     <div class="content-area">
@@ -446,10 +522,12 @@
                 </div>
                 
                 <nav>
-                    <a href="https://discord.com/users/989844678536986624" target="_blank">talk with me!</a>
-                    <a href="https://www.instagram.com/dexitry/" target="_blank">instagram</a>
+                    <a href="https://discord.com/users/989844678536986624" target="_blank" data-tooltip="ID: 989844678536986624">talk with me!</a>
+                    <a href="https://www.instagram.com/dexitry/" target="_blank" data-tooltip="@dexitry">instagram</a>
                 </nav>
             </div>
+
+            <div class="system-clock" id="sys-clock">SYS_TIME: --:--:--</div>
 
             <div class="live-status-container">
                 <div class="status-main-line">
@@ -468,20 +546,37 @@
 
             <p>
                 i used to wrangle servers and hardware in IT, now i just wrangle unemployment. as for games? mainly 
-                <a href="https://osu.ppy.sh/users/17459468" target="_blank" class="link-osu">osu!</a> 
+                <a href="https://osu.ppy.sh/users/17459468" target="_blank" class="link-osu" data-tooltip="Profile: Dexitry">osu!</a> 
                 and 
-                <a href="https://tracker.gg/lol/profile/riot/Nicotine%20Addict%23FF15/overview" target="_blank" class="link-lol">league of legends</a>.
+                <a href="https://tracker.gg/lol/profile/riot/Nicotine%20Addict%23FF15/overview" target="_blank" class="link-lol" data-tooltip="Nicotine Addict #FF15">league of legends</a>.
             </p>
 
-            <button class="hardware-trigger" onclick="toggleSpecs(this)">
-                <span>▶</span> pc hardware
-            </button>
+            <div class="button-row">
+                <button class="hardware-trigger" onclick="toggleSpecs(this)">
+                    <span>▶</span> pc hardware
+                </button>
+                <button class="term-toggle" onclick="toggleTerminal()" data-tooltip="Press '~' key to open">
+                    <span>$&gt;</span> interactive terminal
+                </button>
+            </div>
+
             <div class="hardware-specs" id="specs">
                 <div class="spec-label">CPU</div><div>Ryzen 5 5600X</div>
                 <div class="spec-label">GPU 1</div><div>RTX 4060</div>
                 <div class="spec-label">GPU 2</div><div>RX 7600 XT <span class="spec-note">(only used to give my 4060 more power / ram, yes very high-concept IT wizardry)</span></div>
                 <div class="spec-label">RAM</div><div>32GB DDR4 3200MHz</div>
                 <div class="spec-label">Storage</div><div>1 TB KIOXIA SSD <span class="spec-note">(and 2 samsung evo ssds that are like 250gb, just incase i need them)</span></div>
+            </div>
+
+            <div class="terminal-container" id="terminal">
+                <div class="terminal-history" id="term-history">DexWindows Command Prompt [Version 10.0.22631.3007]
+(c) Dex Corporation. All rights reserved.
+
+Type "help" for a list of available commands.</div>
+                <div class="terminal-prompt-line">
+                    <span>C:\Users\dex\dexitry&gt;</span>
+                    <input type="text" class="terminal-input" id="term-input" autocomplete="off" spellcheck="false">
+                </div>
             </div>
             
             <p class="sub">i suck at both of those games btw</p>
@@ -512,22 +607,77 @@
             glow.style.setProperty('--y', e.clientY + 'px');
         });
 
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            document.getElementById('sys-clock').innerText = `SYS_TIME: ${timeStr}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
         function toggleSpecs(btn) {
             btn.classList.toggle('open');
             document.getElementById('specs').classList.toggle('open');
         }
 
+        function toggleTerminal() {
+            const term = document.getElementById('terminal');
+            term.classList.toggle('open');
+            if(term.classList.contains('open')) {
+                setTimeout(() => document.getElementById('term-input').focus(), 50);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '`') {
+                e.preventDefault();
+                toggleTerminal();
+            }
+        });
+
+        const termInput = document.getElementById('term-input');
+        const termHistory = document.getElementById('term-history');
+        
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = termInput.value.trim().toLowerCase();
+                let reply = `\nC:\\Users\\dex\\dexitry>${termInput.value}\n`;
+
+                if (cmd === 'help') {
+                    reply += "For more information on a specific command, type HELP command-name\n\nHELP         Provides Help information for system utilities.\nSYSTEMINFO   Displays machine environment variables and hardware properties.\nCLS          Clears the screen.\nEXIT         Exits the interactive prompt window.";
+                } else if (cmd === 'systeminfo') {
+                    reply += "OS Name:                   DexWindows 11 Enterprise\nOS Version:                10.0.22631 N/A Build 22631\nSystem Owner:              dex\\dexitry\nProcessor(s):              Ryzen 5 5600X\nTotal Physical Memory:     32,698 MB\nGraphics Hardware:         RTX 4060 + RX 7600 XT\nPrimary Drive Config:      1 TB KIOXIA NVMe SSD\nCurrent Status:            Wrangling unemployment";
+                } else if (cmd === 'cls') {
+                    termHistory.innerHTML = '';
+                    termInput.value = '';
+                    return;
+                } else if (cmd === 'exit') {
+                    toggleTerminal();
+                    termInput.value = '';
+                    return;
+                } else if (cmd !== '') {
+                    reply += `'${cmd}' is not recognized as an internal or external command,\noperable program or batch file.`;
+                }
+
+                if (cmd !== '') {
+                    termHistory.innerHTML += reply;
+                    termHistory.scrollTop = termHistory.scrollHeight;
+                }
+                termInput.value = '';
+            }
+        });
+
         function copyBannerCode() {
             const currentUrl = window.location.origin;
-            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" width="88" height="31" alt="dexitry"></a>`;
+            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" width="180" height="63" alt="dexitry"></a>`;
             
             navigator.clipboard.writeText(embedString).then(() => {
                 const btn = document.getElementById('copy-btn');
                 btn.classList.add('copied');
-                btn.innerText = 'thanks!';
+                btn.innerText = 'done!';
                 
                 setTimeout(() => {
-                    btn.innerText = 'copy again?';
+                    btn.innerText = 'copy';
                     btn.classList.remove('copied');
                 }, 2200);
             }).catch(err => {

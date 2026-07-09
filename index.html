@@ -5,171 +5,555 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dexitry</title>
-</head>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
-    body {
-        margin: 0;
-        background-color: rgb(0,0,0,1);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100dvw;
-        height: 100dvh;
-        overflow: hidden;
-        font-family: "Radio Canada Big";
-    }
-    .sub {
-        font-size: small;
-        color: rgb(80, 80, 80);
-    }
-    a {
-        color: gray;
-    }
-    a:hover {
-        color: darkgray;
-    }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+        }
 
-    @media only screen and (max-width: 600px) {
-        div.wrapper {
-            padding-inline: 4rem;
-            width: 100dvw !important;
-            height: 100dvh;
+        body {
+            margin: 0;
+            background-color: rgb(0,0,0);
+            color: white;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            font-family: "Radio Canada Big", sans-serif;
+            position: relative;
+        }
+
+        #mouse-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(600px circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.03), transparent 40%);
+            z-index: 1;
+        }
+
+        .wrapper {
+            width: 90%;
+            max-width: 650px;
+            padding: 2.5rem;
+            background: rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+            z-index: 10;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-color 0.4s ease, 
+                        box-shadow 0.4s ease;
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .wrapper:hover {
+            transform: translateY(-2px) scale(1.01);
+            border-color: rgba(255, 255, 255, 0.15); 
+            box-shadow: 0 30px 60px rgba(255, 255, 255, 0.04), 0 0 40px rgba(0, 0, 0, 0.95);
+        }
+
+        div.head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: rgba(0, 0, 0, 0.9);
+            background-blend-mode: darken;
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) grayscale(100%);
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+
+        .bg-layer.active {
+            opacity: 1;
+        }
+
+        .title-container {
+            display: flex;
             flex-direction: column;
+            gap: 0.2rem;
         }
-        p:nth-child(1) {
-            justify-self: flex-end;
-        }
-    }
-    div.wrapper {
-        width: 40%;
-        height: 50%;
-        max-width: 650px;
-    }
-    div.head {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    div.background {
-        position: absolute;
-        width: 100dvw;
-        height: 100dvh;
-        z-index: -1;
-        animation: cycle 10s forwards infinite;
-        background-color: rgb(0,0,0,0.9);
-        background-blend-mode: darken;
-        background-size: cover;
-        filter: blur(4px) grayscale(100%);
-        background-position: center;
-    }
 
-    @keyframes cycle {
-        0% {
-            transform: scale(1);
-            opacity: 0;
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            line-height: 1;
+            letter-spacing: -0.5px;
         }
-        5% {
-            opacity: 0;
-        }
-        30% {
-            opacity: 1;
-        }
-        90% {
-            transform: scale(1.05);
-            opacity: 1;
-        }
-        100% {
-            transform: scale(1.08);
-            opacity: 0;
-        }
-    }
 
-    @keyframes subtlePulse {
-        0%, 100% {
-            transform: rotate(-20deg) scale(1);
+        .minecraft-splash-effect {
+            opacity: 0.75;
+            font-size: 0.95rem;
+            font-weight: bold;
+            white-space: nowrap;
+            transform-origin: left center;
+            transform: rotate(-1deg);
+            animation: subtlePulse 0.6s infinite ease-in-out alternate;
+            color: #ccc;
         }
-        50% {
-            transform: rotate(-20deg) scale(1.05);
+
+        .link-peebly {
+            color: #ff9f1c !important;
+            text-decoration: underline !important;
+            transition: text-shadow 0.2s ease, color 0.2s ease;
         }
-    }
+        .link-peebly:hover {
+            color: #ffbf69 !important;
+            text-shadow: 0 0 8px rgba(255, 159, 28, 0.5);
+        }
 
-    .title-container {
-        position: relative;
-        display: inline-block; /* keep it tight to content */
-        margin-right: 4rem;
-    }
+        nav {
+            display: flex;
+            gap: 18px;
+            padding-top: 0.4rem;
+        }
 
-    .minecraft-splash-effect {
-        /* font-family: "Minecraft"; */
-        opacity: 0.4;
-        font-size: 1rem;
-        font-weight: bold;
-        transform: rotate(-20deg);
-        position: absolute;
-        top: 3.2em;
-        right: -3em;
-        /* text-shadow:
-            -1px -1px 0 #3a3a3a,
-            1px -1px 0 #3a3a3a,
-            -1px  1px 0 #3a3a3a,
-            1px  1px 0 #3a3a3a; */
-        white-space: nowrap;
-        animation: subtlePulse 0.5s infinite ease-in-out;
-    }
+        nav a {
+            color: #888;
+            text-decoration: none;
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
 
-    nav {
-        display: flex;
-        gap: 10px;
-    }
-</style>
+        nav a:hover {
+            color: #fff;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: -3px;
+            left: 0;
+            background-color: #fff;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        nav a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .live-status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 0.6rem;
+        }
+
+        .status-main-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #666;
+            min-height: 18px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #444;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        .status-dot.online { background-color: #23a55a; box-shadow: 0 0 8px #23a55a; }
+        .status-dot.idle { background-color: #f0b232; box-shadow: 0 0 8px #f0b232; }
+        .status-dot.dnd { background-color: #f23f43; box-shadow: 0 0 8px #f23f43; }
+        .status-dot.spotify-active { background-color: #1db954; box-shadow: 0 0 8px #1db954; }
+        
+        .live-text {
+            color: #888;
+        }
+        .live-text span {
+            color: #eee;
+            font-weight: 500;
+        }
+
+        .status-sub-line {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #666;
+            padding-left: 14px;
+        }
+
+        .equalizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            width: 10px;
+            height: 8px;
+            margin-bottom: 1px;
+        }
+        .equalizer-bar {
+            width: 1.5px;
+            height: 100%;
+            background-color: #1db954;
+            transform-origin: bottom;
+            animation: bounce 0.5s ease-in-out infinite alternate;
+        }
+        .equalizer-bar:nth-child(2) { animation-duration: 0.3s; animation-delay: -0.15s; }
+        .equalizer-bar:nth-child(3) { animation-duration: 0.4s; animation-delay: -0.05s; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(0.2); }
+            100% { transform: scaleY(1); }
+        }
+
+        p a {
+            text-decoration: none;
+            padding-bottom: 2px;
+            transition: all 0.25s ease;
+        }
+
+        .link-osu {
+            color: #ff66aa; 
+            border-bottom: 2px solid rgba(255, 102, 170, 0.3);
+        }
+        .link-osu:hover {
+            color: #ff85bc;
+            border-bottom-color: #ff66aa;
+            text-shadow: 0 0 10px rgba(255, 102, 170, 0.4);
+        }
+
+        .link-lol {
+            color: white; 
+            border-bottom: 2px solid rgba(255, 235, 122, 0.5); 
+        }
+        .link-lol:hover {
+            color: white;
+            border-bottom-color: #ffeb7a;
+            text-shadow: 0 0 10px rgba(255, 235, 122, 0.4);
+        }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 1.65;
+            margin: 1rem 0;
+            color: #e5e5e5;
+        }
+
+        .hardware-trigger {
+            background: none;
+            border: none;
+            color: rgb(90, 90, 90);
+            font-family: inherit;
+            font-size: 0.82rem;
+            padding: 0;
+            cursor: pointer;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s ease;
+        }
+        .hardware-trigger:hover {
+            color: #bbb;
+        }
+        .hardware-trigger span {
+            font-size: 0.65rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .hardware-trigger.open span {
+            transform: rotate(90deg);
+        }
+        .hardware-specs {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s ease;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.6rem 1.5rem;
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        .hardware-specs.open {
+            max-height: 400px;
+            margin-top: 1rem;
+        }
+        .spec-label {
+            color: #555;
+            font-weight: bold;
+        }
+        .spec-note {
+            color: #666;
+            font-size: 0.78rem;
+            display: inline-block;
+            margin-left: 0.4rem;
+        }
+
+        .sub {
+            font-size: 0.82rem;
+            color: rgb(60, 60, 60);
+            margin-top: 1.5rem;
+            margin-bottom: 0;
+        }
+
+        @keyframes subtlePulse {
+            0% { transform: rotate(-1deg) scale(0.98); }
+            100% { transform: rotate(-1deg) scale(1.02); }
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media only screen and (max-width: 768px) {
+            .wrapper { padding: 1.8rem; width: 90%; }
+            div.head { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+            nav { padding-top: 0; }
+        }
+    </style>
+</head>
 <body>
-    <div class="background" id="bg"></div>
+
+    <div id="mouse-glow"></div>
+
+    <div class="bg-layer active" id="bg1"></div>
+    <div class="bg-layer" id="bg2"></div>
+
     <div class="wrapper">
         <div class="head">
             <div class="title-container">
                 <h1>dexitry</h1>
                 <div class="minecraft-splash-effect">
-                    Also meet 
-                    <a href="https://salamithecat.com">peebly</a>!
+                    Also meet <a href="https://salamithecat.com" target="_blank" class="link-peebly">peebly</a>!
                 </div>
             </div>
             
             <nav>
-                <a href="https://discord.com/users/989844678536986624">talk</a>
-                <a href="https://www.instagram.com/dhmopoulosssss/">instagram</a>
+                <a href="https://discord.com/users/989844678536986624" target="_blank">talk</a>
+                <a href="https://www.instagram.com/dexitry/" target="_blank">instagram</a>
             </nav>
         </div>
-        <p>
-            i used to work in IT, im unemployed now. as for games? mainly
-            <a href="https://osu.ppy.sh/users/17459468">osu!</a>
-            and
-            <a href="https://tracker.gg/lol/profile/riot/Nicotine%20Addict%23FF15/overview?queue=RANKED_SOLO_5x5&season=2026-01-07T22:06:40%2B00:00">league of legends</a>
-        </p>
-        <p class="sub">backgrounds randomly sourced from osu art contests.</p>
-    </div>
-</body>
-<script>
-    let sources = null
-    const backgroundElement = document.getElementById("bg")
-    const ImageSourcesReadyEvent = new CustomEvent("image-sources-ready")
-    document.addEventListener("image-sources-ready", function() {
-        setInterval(function() {
-            backgroundElement.style.backgroundImage = `url(${sources[Math.floor(Math.random() * sources.length)]})`
-        }, 10000)
-    })
 
-    fetch("https://corsproxy.io/?url=https://osu.ppy.sh/api/v2/seasonal-backgrounds")
-        .then(res => JSON.parse('{"ends_at":"2026-01-31T00:00:00+00:00","backgrounds":[{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17286\/f65a2f08ef895d2fe7098a1e0f405c1cbc6562e8282b0058d12e163639bf013d_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/13445197?1764538383.png","country_code":"US","default_group":"default","id":13445197,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-11T05:54:09+00:00","pm_friends_only":false,"profile_colour":null,"username":"charro"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17311\/5c0acd6c13b2006931792bd334317c0dac94023b0feef715b30172ba6787cbcd_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/10066998?1766509804.jpeg","country_code":"TR","default_group":"default","id":10066998,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2025-12-24T01:03:38+00:00","pm_friends_only":false,"profile_colour":null,"username":"lustorium"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17312\/46eb143dd726dc2cb2e6425add0cb22b2d13fa5b8eef91b9e8151c2d7220250f_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/35911207?1768091124.jpeg","country_code":"US","default_group":"default","id":35911207,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-13T02:33:12+00:00","pm_friends_only":false,"profile_colour":null,"username":"Kirb2"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17358\/72864cf6f8d7248ad5fa8688c39317de214a2831b244c926cbc62f49617cdc05_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/18080775?1743517465.png","country_code":"HK","default_group":"default","id":18080775,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-13T02:02:44+00:00","pm_friends_only":false,"profile_colour":null,"username":"yanmaizhou329"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17373\/318feb50698c1c0f8c78a6bb885e8f64f3949f6cbf1af27a51e1d88fd96733c9_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/23930728?1762725333.jpeg","country_code":"RU","default_group":"default","id":23930728,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-13T00:04:13+00:00","pm_friends_only":false,"profile_colour":null,"username":"Ferineon"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17378\/8caa97afe3ead3b3b26f580b7a6566876e3fa4cd22ab0ea46c1bd9d6729a133e_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/24631771?1637036427.jpeg","country_code":"SG","default_group":"default","id":24631771,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":false,"profile_colour":null,"username":"Du11Knight"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17381\/2948cc8cd6590962d5ece568a8d4899721df46f319f7b8db86dcc5c69acfc8e9_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/12320713?1665090050.jpeg","country_code":"CH","default_group":"default","id":12320713,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-11T16:36:01+00:00","pm_friends_only":false,"profile_colour":null,"username":"Kibuuuun"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17387\/cd5220bce19270220ed8b71a8e389539c3ab8ef1d56bcfe8350ca06d8a6be8b9_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/6641784?1764087438.png","country_code":"CL","default_group":"default","id":6641784,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-12T23:42:04+00:00","pm_friends_only":false,"profile_colour":null,"username":"Pyo"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17401\/b547ad60297ba2aff6aaf78ba33658571dd1105192447b3eb4ecf7766fd43ea8_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/30003504?1752179539.jpeg","country_code":"UA","default_group":"default","id":30003504,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-11T10:45:24+00:00","pm_friends_only":false,"profile_colour":null,"username":"konchaan"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17420\/86dc9583e438109cb8e9be02002b2c94aacc1fc71fb481956f66ae3c17b66ffa_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/2169329?1663526112.png","country_code":"TW","default_group":"default","id":2169329,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-12T19:44:01+00:00","pm_friends_only":false,"profile_colour":null,"username":"69maow"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17448\/4437b8525f27ce3ebcb92a53a1aa42c96be8748885ea98e8ed516ec4c1291b9b_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/26496648?1753838755.jpeg","country_code":"HK","default_group":"default","id":26496648,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":false,"profile_colour":null,"username":"Alptraum"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17475\/80fe53a7f834514d612c17cfa4fca519c306fb935634bb019c8e5721dd8837e9_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/13298982?1758195105.png","country_code":"MY","default_group":"default","id":13298982,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-13T00:10:34+00:00","pm_friends_only":false,"profile_colour":null,"username":"Kourihase"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17493\/c4cff4ce8b33425cb13e53f5c8b00c37a88c951fe24bc403bec7e693da624b20_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/13103233?1766681209.jpeg","country_code":"ID","default_group":"default","id":13103233,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-12T21:48:22+00:00","pm_friends_only":false,"profile_colour":null,"username":"KAITO thighs"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17514\/1426e1730740cbc762c7d1542f86eae250d121b7399f79b31071462e47ccdbd7_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/8734089?1743631273.jpeg","country_code":"TH","default_group":"default","id":8734089,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-13T01:01:00+00:00","pm_friends_only":false,"profile_colour":null,"username":"Darkuna"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17535\/28f85409420cc111fa2f260bcce53e9075e9f3181a7ed998ba1f514391a08054_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/14991975?1767088156.jpeg","country_code":"US","default_group":"default","id":14991975,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":true,"profile_colour":null,"username":"Son Goku"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17568\/2a8b726a9fb7f854e5c6a2e3f00c7118fe3673e6201c04845e18a483fd7408d1_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/27725651?1767141733.jpeg","country_code":"ID","default_group":"default","id":27725651,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":false,"profile_colour":null,"username":"Kleinne Lui"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17577\/d3938f3e4fe1319492004a8fcbda5024efa4e285519ce84018b5bdf13f9051a2_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/12178754?1732474654.jpeg","country_code":"CN","default_group":"default","id":12178754,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-11T08:44:17+00:00","pm_friends_only":false,"profile_colour":null,"username":"year-bear"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17589\/d17cf7dad01d106c172ff7c7f84787445af06fbc0d2c8a2f9afbc302d7d0097c_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/7656048?1767282125.jpeg","country_code":"TH","default_group":"default","id":7656048,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":false,"profile_colour":null,"username":"- Y u m i J i-"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17594\/cce6d58a404d7c76985b0a38f87238f749102cab5e406939b6080770b6e21cb5_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/17084594?1721837625.jpeg","country_code":"GE","default_group":"default","id":17084594,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":false,"profile_colour":null,"username":"Triantafyllia"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17596\/9112eeefc5e0099949d246202a15703c7846958037b2b4ef15f81152cce23e69_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/15875092?1752516075.png","country_code":"HK","default_group":"default","id":15875092,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":null,"pm_friends_only":false,"profile_colour":null,"username":"h3p0"}},{"url":"https:\/\/assets.ppy.sh\/user-contest-entries\/17600\/1d410c7657a6d5d688692bf8aa95f15cdefd0309f1fdd614294566311076c923_opt.jpg","user":{"avatar_url":"https:\/\/a.ppy.sh\/11516014?1578351707.jpeg","country_code":"MX","default_group":"default","id":11516014,"is_active":true,"is_bot":false,"is_deleted":false,"is_online":false,"is_supporter":true,"last_visit":"2026-01-11T01:11:43+00:00","pm_friends_only":false,"profile_colour":null,"username":"Kwms024"}}]}'))
-        .then(data => data.backgrounds.map(background => background.url))
-        .then(background_urls => {
-            sources = background_urls
-            document.dispatchEvent(ImageSourcesReadyEvent)
-            backgroundElement.style.backgroundImage = `url(${background_urls[Math.floor(Math.random() * background_urls.length)]})`
-        })
-</script>
+        <div class="live-status-container">
+            <div class="status-main-line">
+                <div class="status-dot" id="status-dot"></div>
+                <div class="live-text" id="live-text">Connecting to sync layer...</div>
+            </div>
+            <div class="status-sub-line" id="status-sub-line">
+                <div class="equalizer">
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                </div>
+                <div class="live-text" id="live-sub-text"></div>
+            </div>
+        </div>
+
+        <p>
+            i used to wrangle servers and hardware in IT, now i just wrangle unemployment. as for games? mainly 
+            <a href="https://osu.ppy.sh/users/17459468" target="_blank" class="link-osu">osu!</a> 
+            and 
+            <a href="https://tracker.gg/lol/profile/riot/Nicotine%20Addict%23FF15/overview" target="_blank" class="link-lol">league of legends</a>.
+        </p>
+
+        <button class="hardware-trigger" onclick="toggleSpecs(this)">
+            <span>▶</span> pc hardware
+        </button>
+        <div class="hardware-specs" id="specs">
+            <div class="spec-label">CPU</div><div>Ryzen 5 5600X</div>
+            <div class="spec-label">GPU 1</div><div>RTX 4060</div>
+            <div class="spec-label">GPU 2</div><div>RX 7600 XT <span class="spec-note">(only used to give my 4060 more power / ram, yes very high-concept IT wizardry)</span></div>
+            <div class="spec-label">RAM</div><div>32GB DDR4 3200MHz</div>
+            <div class="spec-label">Storage</div><div>1 TB KIOXIA SSD <span class="spec-note">(and 2 samsung evo ssds that are like 250gb, just incase i need them)</span></div>
+        </div>
+        
+        <p class="sub">backgrounds dynamically sourced from osu! seasonal art contests.</p>
+    </div>
+
+    <script>
+        const DISCORD_ID = '989844678536986624';
+
+        const glow = document.getElementById('mouse-glow');
+        window.addEventListener('mousemove', (e) => {
+            glow.style.setProperty('--x', e.clientX + 'px');
+            glow.style.setProperty('--y', e.clientY + 'px');
+        });
+
+        function toggleSpecs(btn) {
+            btn.classList.toggle('open');
+            document.getElementById('specs').classList.toggle('open');
+        }
+
+        const bg1 = document.getElementById("bg1");
+        const bg2 = document.getElementById("bg2");
+        let currentBgElement = bg1;
+        
+        const seasonalBgs = [
+            "https://assets.ppy.sh/user-contest-entries/17286/f65a2f08ef895d2fe7098a1e0f405c1cbc6562e8282b0058d12e163639bf013d_opt.jpg",
+            "https://assets.ppy.sh/user-contest-entries/17311/5c0acd6c13b2006931792bd334317c0dac94023b0feef715b30172ba6787cbcd_opt.jpg",
+            "https://assets.ppy.sh/user-contest-entries/17312/46eb143dd726dc2cb2e6425add0cb22b2d13fa5b8eef91b9e8151c2d7220250f_opt.jpg",
+            "https://assets.ppy.sh/user-contest-entries/16084/6ef6cc27d6d5386b864f7b60098df2400e9ec1438fa74136453fa8e71887e14a_opt.jpg"
+        ];
+        
+        let sources = [...seasonalBgs];
+        let lastIndex = -1;
+
+        function setRandomBackground() {
+            if (sources.length <= 1) return;
+            let newIndex;
+            do { newIndex = Math.floor(Math.random() * sources.length); } while (newIndex === lastIndex);
+            lastIndex = newIndex;
+            let nextUrl = sources[newIndex];
+            if (nextUrl.includes('user-contest-entries') && !nextUrl.endsWith('_opt.jpg') && !nextUrl.endsWith('_hd.jpg')) {
+                nextUrl = nextUrl.replace('.jpg', '_opt.jpg');
+            }
+            const img = new Image();
+            img.src = nextUrl;
+            img.onload = () => {
+                const nextBgElement = currentBgElement === bg1 ? bg2 : bg1;
+                nextBgElement.style.backgroundImage = `url('${nextUrl}')`;
+                nextBgElement.classList.add("active");
+                currentBgElement.classList.remove("active");
+                currentBgElement = nextBgElement;
+            };
+        }
+        bg1.style.backgroundImage = `url('${sources[0]}')`;
+        fetch("https://osu.ppy.sh/api/v2/seasonal-backgrounds")
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && data.backgrounds && data.backgrounds.length > 0) {
+                    sources = data.backgrounds.map(bg => bg.url);
+                    setRandomBackground();
+                }
+            }).catch(() => {});
+        setInterval(setRandomBackground, 7000);
+
+        const dot = document.getElementById('status-dot');
+        const mainText = document.getElementById('live-text');
+        const subLine = document.getElementById('status-sub-line');
+        const subText = document.getElementById('live-sub-text');
+
+        function renderPresence(data) {
+            if (!data) return;
+
+            dot.className = 'status-dot';
+            subLine.style.display = 'none';
+            subText.innerHTML = '';
+
+            if (data.discord_status === 'offline' || !data.discord_status) {
+                dot.classList.add('offline');
+                mainText.innerHTML = 'Status: <span>Offline</span>';
+                return;
+            }
+
+            dot.classList.add(data.discord_status);
+
+            let hasGame = false;
+            let actualGameName = "";
+
+            if (data.activities && data.activities.length > 0) {
+                const actualGame = data.activities.find(act => act.type === 0);
+                if (actualGame) {
+                    hasGame = true;
+                    actualGameName = actualGame.name;
+                }
+            }
+
+            const isListeningSpotify = data.listening_to_spotify && data.spotify;
+
+            if (hasGame && isListeningSpotify) {
+                mainText.innerHTML = `Playing: <span>${actualGameName}</span>`;
+                const songName = data.spotify.song || data.spotify.track || "Unknown Track";
+                const artistName = data.spotify.artist ? data.spotify.artist.split(';')[0] : "Unknown Artist";
+                
+                subText.innerHTML = `Background Music: <span>${songName}</span> - <span>${artistName}</span>`;
+                subLine.style.display = 'flex';
+                return;
+            }
+
+            if (hasGame) {
+                mainText.innerHTML = `Playing: <span>${actualGameName}</span>`;
+                return;
+            }
+
+            if (isListeningSpotify) {
+                dot.className = 'status-dot spotify-active'; 
+                const songName = data.spotify.song || data.spotify.track || "Unknown Track";
+                const artistName = data.spotify.artist ? data.spotify.artist.split(';')[0] : "Unknown Artist";
+                
+                mainText.innerHTML = `Listening to: <span>${songName}</span> by <span>${artistName}</span>`;
+                return;
+            }
+
+            let statusClean = data.discord_status;
+            if (statusClean === 'dnd') statusClean = 'do not disturb';
+            mainText.innerHTML = `Status: <span>${statusClean}</span>`;
+        }
+
+        function loadInitialPresence() {
+            fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+                .then(res => res.json())
+                .then(resData => { if (resData.success && resData.data) renderPresence(resData.data); })
+                .catch(err => console.log(err));
+        }
+
+        function initLanyardSocket() {
+            const ws = new WebSocket('wss://api.lanyard.rest/socket');
+            let heartbeatInterval;
+
+            ws.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+
+                if (msg.op === 1) {
+                    ws.send(JSON.stringify({ op: 2, d: { subscribe_to_ids: [DISCORD_ID] } }));
+                    heartbeatInterval = setInterval(() => { ws.send(JSON.stringify({ op: 3 })); }, msg.d.heartbeat_interval);
+                }
+
+                if (msg.op === 0) {
+                    if (msg.t === 'INIT_STATE') {
+                        if (msg.d && msg.d[DISCORD_ID]) {
+                            renderPresence(msg.d[DISCORD_ID]);
+                        }
+                    } else if (msg.t === 'PRESENCE_UPDATE') {
+                        if (msg.d && msg.d.user_id === DISCORD_ID) {
+                            renderPresence(msg.d);
+                        }
+                    }
+                }
+            };
+
+            ws.onclose = () => { 
+                clearInterval(heartbeatInterval);
+                setTimeout(initLanyardSocket, 5000); 
+            };
+        }
+
+        loadInitialPresence();
+        initLanyardSocket();
+    </script>
+</body>
 </html>

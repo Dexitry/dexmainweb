@@ -319,6 +319,106 @@
             margin-bottom: 0;
         }
 
+        .banner-corner {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            z-index: 100;
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+            opacity: 0;
+        }
+
+        .my-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 176px;
+            height: 62px;
+            padding: 0 4px 0 10px;
+            box-sizing: border-box;
+            text-decoration: none;
+            border: 3px solid #333; 
+            background-color: #1a1a1a;
+            background-image: radial-gradient(#0a0a0a 25%, transparent 25%);
+            background-size: 4px 4px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            image-rendering: pixelated;
+        }
+        .my-banner:hover {
+            transform: translateY(-1px);
+            border-color: #555;
+        }
+
+        .banner-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            text-shadow: 1px 1px 1px #000;
+            line-height: 1;
+            padding-right: 4px;
+        }
+
+        .banner-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: lowercase;
+        }
+
+        .banner-sub {
+            font-size: 0.44rem;
+            font-weight: bold;
+            color: #aaa;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            margin-top: 3px;
+            line-height: 1.1;
+            max-width: 100px;
+        }
+
+        .banner-avatar {
+            width: 50px;
+            height: 58px;
+            object-fit: cover;
+            border-left: 1px solid #222;
+            image-rendering: pixelated;
+        }
+
+        .copy-banner-btn {
+            background: rgba(20, 20, 20, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #888;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .copy-banner-btn:hover {
+            color: #fff;
+            background: rgba(40, 40, 40, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .copy-banner-btn.copied {
+            color: #ccc;
+            border-color: #555;
+        }
+
         @keyframes subtlePulse {
             0% { transform: rotate(-1deg) scale(0.98); }
             100% { transform: rotate(-1deg) scale(1.02); }
@@ -333,6 +433,7 @@
             .wrapper { padding: 1.8rem; width: 90%; }
             div.head { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
             nav { padding-top: 0; }
+            .banner-corner { position: static; margin-top: 2.5rem; align-items: flex-start; }
         }
     </style>
 </head>
@@ -394,6 +495,17 @@
         <p class="sub">backgrounds dynamically sourced from osu! seasonal art contests.</p>
     </div>
 
+    <div class="banner-corner">
+        <div class="my-banner">
+            <div class="banner-text">
+                <span class="banner-title">dex</span>
+                <span class="banner-sub">i do dumb shit thats hardware related</span>
+            </div>
+            <img src="https://files.catbox.moe/uvov69.png" alt="avatar" class="banner-avatar">
+        </div>
+        <button class="copy-banner-btn" id="copy-btn" onclick="copyBannerCode()">copy</button>
+    </div>
+
     <script>
         const DISCORD_ID = '989844678536986624';
 
@@ -406,6 +518,23 @@
         function toggleSpecs(btn) {
             btn.classList.toggle('open');
             document.getElementById('specs').classList.toggle('open');
+        }
+
+        function copyBannerCode() {
+            const currentUrl = window.location.origin;
+            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://files.catbox.moe/uvov69.png" width="176" height="62" alt="dexitry"></a>`;
+            
+            navigator.clipboard.writeText(embedString).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.innerText = 'copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerText = 'copy again?';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Could not copy embed token hook:', err);
+            });
         }
 
         const bg1 = document.getElementById("bg1");

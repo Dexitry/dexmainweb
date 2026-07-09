@@ -4,7 +4,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dex</title>
+    <title>dexitry</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
         
@@ -413,79 +413,90 @@
             margin-bottom: 0;
         }
 
-        /* --- PERFECTED BANNER SHELF --- */
-        .banner-shelf {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 2rem;
-            z-index: 100;
-            width: 100%;
-        }
+        /* --- PERFECTED BANNER SHELF (had to improve this shit by myself) --- */
+    .banner-shelf {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 2rem;
+        z-index: 100;
+        width: 100%;
+    }
 
-        .banner-unit {
-            position: relative;
-            display: block;
-            height: 62px; /* Locks all banners to the exact same vertical height */
-        }
+    .banner-unit {
+        position: relative;
+        display: inline-block;
+        width: 88px;
+        height: 31px;
+    }
 
-        .banner-unit a {
-            display: flex;
-            height: 100%;
-        }
+    .banner-unit a {
+        display: block;
+        width: 88px;
+        height: 31px;
+    }
 
-        .my-banner-img, .peebly-banner-img {
-            height: 100%; /* Fills the 62px locked height */
-            width: auto; /* Scales proportionally */
-            display: block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
-        }
-        
-        .banner-unit:hover .my-banner-img,
-        .banner-unit:hover .peebly-banner-img {
-            transform: scale(1.04);
-        }
+    .my-banner-img,
+    .peebly-banner-img {
+        width: 88px;
+        height: 31px;
+        display: block;
+        object-fit: contain;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.2s ease;
+    }
 
-        .banner-unit:hover .my-banner-img {
-            filter: brightness(0.25);
-        }
+    .banner-unit:hover .my-banner-img,
+    .banner-unit:hover .peebly-banner-img {
+        transform: scale(1.04);
+    }
 
-        .copy-banner-btn {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 15, 15, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ccc;
-            "Radio Canada Big", sans-serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .banner-unit:hover .my-banner-img {
+        filter: brightness(0.25);
+    }
 
-        .banner-unit:hover .copy-banner-btn {
-            opacity: 1;
-        }
+    .copy-banner-btn {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
 
-        .copy-banner-btn:hover {
-            border-color: rgba(255, 255, 255, 0.5);
-            color: #fff;
-        }
+        background: rgba(15, 15, 15, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ccc;
+        font-family: "Radio Canada Big", sans-serif;
+        font-size: 0.45rem;
+        line-height: 1;
+        text-transform: uppercase;
+        cursor: pointer;
 
-        .copy-banner-btn.copied {
-            background: rgba(30, 30, 30, 0.9);
-            color: #888;
-        }
+        opacity: 0;
+        transition: opacity 0.15s ease,
+                    border-color 0.15s ease,
+                    color 0.15s ease;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+.banner-unit:hover .copy-banner-btn {
+    opacity: 1;
+}
+
+.copy-banner-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+}
+
+.copy-banner-btn.copied {
+    background: rgba(30, 30, 30, 0.9);
+    color: #888;
+}
 
         @keyframes subtlePulse {
             0% { transform: rotate(-1deg) scale(0.98); }
@@ -669,7 +680,7 @@ Type "help" for a list of available commands.</div>
 
         function copyBannerCode() {
             const currentUrl = window.location.origin;
-            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" width="180" height="63" alt="dexitry"></a>`;
+            const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" width="88" height="31" alt="dexitry"></a>`;
             
             navigator.clipboard.writeText(embedString).then(() => {
                 const btn = document.getElementById('copy-btn');

@@ -1248,7 +1248,8 @@ const DISCORD_ID = '989844678536986624';
                              "REBOOT         Triggers full cold-boot diagnostic motherboard POST script down.\n" +
                              "FUNNY          This is a funny command, dont do it though\n" +
                              "CLS / CLEAR    Clears active screen metrics.\n" +
-                             "EXIT           Exits the interactive cmd prompt layer.";
+                             "EXIT           Exits the interactive cmd prompt layer." +
+                             "PING           Ping the website.";
                 } 
                 else if (cmd === 'sysinfo') {
                     const platform = navigator.userAgentData ? navigator.userAgentData.platform : "Windows Client";
@@ -1428,10 +1429,12 @@ const DISCORD_ID = '989844678536986624';
                     }, 800);
                     return;
                 }
-                else if (cmd === 'xarhs') { reply += "mhn vgaleis hubris re mpastardo"; } 
-                else if (cmd === 'kyriakos') { reply += "femboyenjoyer69"; } 
+                else if (cmd === 'xarhs') { reply += "mhn vgaleis hubris re mpastardo"; }
+                else if (cmd === 'nigga') {reply += "nigga you're darker than under the bed"; }
+                else if (cmd === 'nigger') {reply += "nigga you're darker than under the bed"; }
+                else if (cmd === 'kyriakos') { reply += "thelei na gamhsei femboys 100%"; } 
                 else if (cmd === 'peble') { reply += "AI PEBLE !!!!"; } 
-                else if (cmd == 'ping') {
+                else if (cmd === 'ping') {
                     reply += "Pinging dexitry.com with 32 bytes of data:\nReply from 127.0.0.1: bytes=32 time<1ms TTL=128";
                 } else if (cmd === 'cls' || cmd === 'clear') {
                     bypassObserver = true;

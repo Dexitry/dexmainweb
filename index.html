@@ -27,6 +27,40 @@
             padding: 3rem 0;
         }
 
+        /* HARDWARE BIOS POST LAYER */
+        #bios-loader {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            padding: 2rem;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        /* INTEGRITY TAMPER SCREEN LAYER */
+        #tamper-screen {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000000;
+            user-select: none;
+            letter-spacing: -0.5px;
+        }
+
         #mouse-glow {
             position: fixed;
             top: 0;
@@ -38,6 +72,7 @@
             z-index: 1;
         }
 
+        /* MAIN UI LAYER */
         .content-area {
             display: flex;
             align-items: center;
@@ -45,6 +80,8 @@
             flex-grow: 1;
             width: 100%;
             z-index: 10;
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
 
         .wrapper {
@@ -60,7 +97,6 @@
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
                         border-color 0.4s ease, 
                         box-shadow 0.4s ease;
-            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .wrapper:hover {
@@ -90,6 +126,8 @@
             background-position: center;
             filter: blur(3px) grayscale(20%);
             background-image: url('https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2000');
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
 
         .title-container {
@@ -113,7 +151,7 @@
             transform-origin: left center;
             transform: rotate(-1deg);
             animation: subtlePulse 0.6s infinite ease-in-out alternate;
-            color: #ccc;
+            color: #ffeb7a;
         }
 
         [data-tooltip] {
@@ -158,9 +196,7 @@
             transition: color 0.3s ease;
         }
 
-        nav a:hover {
-            color: #fff;
-        }
+        nav a:hover { color: #fff; }
 
         nav a::after {
             content: '';
@@ -183,14 +219,18 @@
         .live-status-container {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 8px;
             margin-bottom: 0.6rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .status-main-line {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -211,21 +251,33 @@
         .status-dot.dnd { background-color: #f23f43; box-shadow: 0 0 8px #f23f43; }
         .status-dot.spotify-active { background-color: #1db954; box-shadow: 0 0 8px #1db954; }
         
-        .live-text {
-            color: #888;
-        }
-        .live-text span {
-            color: #eee;
-            font-weight: 500;
-        }
+        .live-text { color: #888; }
+        .live-text span { color: #eee; font-weight: 500; }
 
         .status-sub-line {
             display: none;
             align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
-            color: #666;
-            padding-left: 14px;
+            gap: 12px;
+            background: rgba(29, 185, 84, 0.08);
+            border: 1px solid rgba(29, 185, 84, 0.2);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 4px;
+        }
+
+        .spotify-album-art {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            object-fit: cover;
+        }
+
+        .spotify-info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            font-size: 0.78rem;
         }
 
         .equalizer {
@@ -234,7 +286,6 @@
             gap: 2px;
             width: 10px;
             height: 8px;
-            margin-bottom: 1px;
         }
         .equalizer-bar {
             width: 1.5px;
@@ -311,17 +362,14 @@
             gap: 6px;
             transition: color 0.2s ease;
         }
-        .hardware-trigger:hover {
-            color: #bbb;
-        }
+        .hardware-trigger:hover { color: #bbb; }
         .hardware-trigger span {
             font-size: 0.65rem;
             display: inline-block;
             transition: transform 0.3s ease;
         }
-        .hardware-trigger.open span {
-            transform: rotate(90deg);
-        }
+        .hardware-trigger.open span { transform: rotate(90deg); }
+        
         .hardware-specs {
             max-height: 0;
             overflow: hidden;
@@ -337,16 +385,8 @@
             max-height: 400px;
             margin-top: 1rem;
         }
-        .spec-label {
-            color: #555;
-            font-weight: bold;
-        }
-        .spec-note {
-            color: #666;
-            font-size: 0.78rem;
-            display: inline-block;
-            margin-left: 0.4rem;
-        }
+        .spec-label { color: #555; font-weight: bold; }
+        .spec-note { color: #666; font-size: 0.78rem; display: inline-block; margin-left: 0.4rem; }
 
         .term-toggle {
             background: none;
@@ -366,146 +406,228 @@
         .terminal-container {
             max-height: 0;
             overflow: hidden;
-            background: rgba(12, 12, 12, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0);
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s ease, border-color 0.4s;
+            background: #0c0c0c;
+            border: 1px solid #ffffff15;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s ease;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
         }
         .terminal-container.open {
-            max-height: 250px;
+            max-height: 520px;
             margin-top: 1rem;
-            border-color: rgba(255, 255, 255, 0.08);
-            padding: 1rem;
         }
-        .terminal-history {
-            overflow-y: auto;
-            flex-grow: 1;
-            margin-bottom: 0.5rem;
+        .terminal-header {
+            background: #1f1f1f;
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ffffff0a;
+            user-select: none;
+        }
+        .terminal-title {
             color: #cccccc;
-            line-height: 1.4;
-            white-space: pre-wrap;
-        }
-        .terminal-prompt-line {
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 2px;
-            color: #ffffff;
+            gap: 6px;
         }
+        .terminal-controls { display: flex; gap: 14px; color: #888888; font-size: 0.75rem; }
+        .terminal-controls span { cursor: pointer; }
+        .terminal-controls span:hover { color: #ffffff; }
+        
+        .terminal-body {
+            padding: 10px;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+        }
+        .terminal-history { color: #cccccc; line-height: 1.5; white-space: pre-wrap; }
+        .terminal-history a { color: #ffeb7a; text-decoration: underline; }
+        .terminal-history a:hover { color: #fff; }
+        
+        .terminal-prompt-line { display: flex; align-items: center; color: #ffffff; margin-top: 4px; }
+        .terminal-prompt-text { color: #cccccc; white-space: nowrap; }
         .terminal-input {
             background: none;
             border: none;
             outline: none;
-            color: #fff;
+            color: #ffffff;
             font-family: inherit;
             font-size: inherit;
             flex-grow: 1;
-            padding: 0;
+            padding: 0 0 0 4px;
         }
 
-        .sub {
+        /* TASKMGR PERFORMANCE ENGINE CSS */
+        .taskmgr-graph-wrapper {
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #00b7c330;
+            background: rgba(0, 183, 195, 0.02);
+            border-radius: 4px;
+            display: none;
+        }
+        .graph-header {
+            display: flex;
+            justify-content: space-between;
+            color: #00b7c3;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .graph-svg { width: 100%; height: 60px; border-bottom: 1px solid #333; border-left: 1px solid #333; }
+        .graph-path { fill: none; stroke: #00b7c3; stroke-width: 1.5; }
+
+        /* WINVER DIALOG POPUP */
+        .winver-modal {
+            display: none;
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            background: rgba(28, 28, 28, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.82rem;
-            color: rgb(75, 75, 75);
-            margin-top: 1.5rem;
-            margin-bottom: 0;
+            z-index: 10000;
+            border-radius: 8px;
+            padding: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+        .winver-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-weight: 400;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: move;
+            color: #cccccc;
+        }
+        .winver-close { cursor: pointer; color: #888; font-size: 0.85rem; padding: 2px 6px; border-radius: 4px;}
+        .winver-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        .winver-content { padding: 18px; }
+        .winver-logo { font-size: 2rem; font-weight: 600; color: #60cdff; line-height: 1; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .winver-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0; }
+        .winver-btn {
+            float: right;
+            padding: 5px 28px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .winver-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); }
+
+        .sub { font-size: 0.82rem; color: rgb(75, 75, 75); margin-top: 1.5rem; margin-bottom: 0; }
+
+        /* BANNER SHELF */
+        .banner-shelf {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 2rem;
+            z-index: 100;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
 
-        /* --- PERFECTED BANNER SHELF (had to improve this shit by myself) --- */
-    .banner-shelf {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 24px;
-        margin-top: 2rem;
-        z-index: 100;
-        width: 100%;
-    }
+        .banner-unit { position: relative; display: inline-block; width: 88px; height: 31px; }
+        .banner-unit a { display: block; width: 88px; height: 31px; }
 
-    .banner-unit {
-        position: relative;
-        display: inline-block;
-        width: 88px;
-        height: 31px;
-    }
+        .my-banner-img, .peebly-banner-img {
+            width: 88px;
+            height: 31px;
+            display: block;
+            object-fit: contain;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+        }
 
-    .banner-unit a {
-        display: block;
-        width: 88px;
-        height: 31px;
-    }
+        .banner-unit:hover .my-banner-img, .banner-unit:hover .peebly-banner-img { transform: scale(1.04); }
+        .banner-unit:hover .my-banner-img { filter: brightness(0.25); }
 
-    .my-banner-img,
-    .peebly-banner-img {
-        width: 88px;
-        height: 31px;
-        display: block;
-        object-fit: contain;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-                    filter 0.2s ease;
-    }
+        .copy-banner-btn {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            background: rgba(15, 15, 15, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            font-family: "Radio Canada Big", sans-serif;
+            font-size: 0.45rem;
+            line-height: 1;
+            text-transform: uppercase;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .banner-unit:hover .my-banner-img,
-    .banner-unit:hover .peebly-banner-img {
-        transform: scale(1.04);
-    }
+        .banner-unit:hover .copy-banner-btn { opacity: 1; }
+        .copy-banner-btn:hover { border-color: rgba(255, 255, 255, 0.5); color: #fff; }
+        .copy-banner-btn.copied { background: rgba(30, 30, 30, 0.9); color: #888; }
 
-    .banner-unit:hover .my-banner-img {
-        filter: brightness(0.25);
-    }
-
-    .copy-banner-btn {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-
-        background: rgba(15, 15, 15, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #ccc;
-        font-family: "Radio Canada Big", sans-serif;
-        font-size: 0.45rem;
-        line-height: 1;
-        text-transform: uppercase;
-        cursor: pointer;
-
-        opacity: 0;
-        transition: opacity 0.15s ease,
-                    border-color 0.15s ease,
-                    color 0.15s ease;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-.banner-unit:hover .copy-banner-btn {
-    opacity: 1;
-}
-
-.copy-banner-btn:hover {
-    border-color: rgba(255, 255, 255, 0.5);
-    color: #fff;
-}
-
-.copy-banner-btn.copied {
-    background: rgba(30, 30, 30, 0.9);
-    color: #888;
-}
+        /* TOAST ARCHITECTURE - UPGRADED TO BARE-METAL INTERFACE */
+        .toast-system-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .win-toast {
+            width: 340px;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 3px solid #ffb700; /* Amber warning strip */
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            padding: 10px 14px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.9);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            pointer-events: auto;
+            transform: translateX(380px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .win-toast.show { transform: translateX(0); }
+        .toast-icon { font-size: 0.85rem; color: #ffb700; font-weight: bold; line-height: 1.4; }
+        .toast-body { display: flex; flex-direction: column; gap: 1px; flex-grow: 1; }
+        .toast-title { font-size: 0.8rem; font-weight: bold; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; }
+        .toast-desc { font-size: 0.75rem; color: #888888; line-height: 1.3; }
 
         @keyframes subtlePulse {
             0% { transform: rotate(-1deg) scale(0.98); }
             100% { transform: rotate(-1deg) scale(1.02); }
-        }
-
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         @media only screen and (max-width: 768px) {
@@ -514,27 +636,35 @@
             nav { padding-top: 0; }
             .button-row { flex-direction: column; gap: 0.8rem; }
             .banner-shelf { gap: 15px; }
+            .winver-modal { width: 90%; font-size: 0.78rem; }
+            .win-toast { width: 290px; right: 10px; bottom: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="mouse-glow"></div>
-    <div class="bg-layer"></div>
+    <div id="bios-loader"></div>
 
-    <div class="content-area">
+    <div id="tamper-screen">don't fucking do that shit here.</div>
+
+    <div id="mouse-glow"></div>
+    <div class="bg-layer" id="bg-frame"></div>
+
+    <div class="toast-system-container" id="toast-stack"></div>
+
+    <div class="content-area" id="main-content">
         <div class="wrapper">
             <div class="head">
                 <div class="title-container">
                     <h1>dexitry</h1>
-                    <div class="minecraft-splash-effect">
+                    <div class="minecraft-splash-effect" id="splash">
                         i tend to do hardware-related shit!
                     </div>
                 </div>
                 
                 <nav>
                     <a href="https://discord.com/users/989844678536986624" target="_blank" data-tooltip="ID: 989844678536986624">talk with me!</a>
-                    <a href="https://www.instagram.com/dexitry/" target="_blank" data-tooltip="@dexitry">instagram</a>
+                    <a href="mailto:dex@dexitry.com" target="_blank" data-tooltip="dex@dexitry.com">contact</a>
                 </nav>
             </div>
 
@@ -546,12 +676,18 @@
                     <div class="live-text" id="live-text">Connecting to sync layer...</div>
                 </div>
                 <div class="status-sub-line" id="status-sub-line">
-                    <div class="equalizer">
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
-                        <div class="equalizer-bar"></div>
+                    <img src="" alt="Album Art" class="spotify-album-art" id="spotify-art">
+                    <div class="spotify-info-block">
+                        <div style="display:flex; align-items:center; gap:6px; font-weight:700; color:#1db954; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.5px;">
+                            <div class="equalizer">
+                                <div class="equalizer-bar"></div>
+                                <div class="equalizer-bar"></div>
+                                <div class="equalizer-bar"></div>
+                            </div>
+                            Live Audio Node
+                        </div>
+                        <div class="live-text" id="live-sub-text" style="margin-top:2px; font-size:0.8rem;"></div>
                     </div>
-                    <div class="live-text" id="live-sub-text"></div>
                 </div>
             </div>
 
@@ -566,8 +702,8 @@
                 <button class="hardware-trigger" onclick="toggleSpecs(this)">
                     <span>▶</span> pc hardware
                 </button>
-                <button class="term-toggle" onclick="toggleTerminal()" data-tooltip="Press '~' key to open">
-                    <span>$&gt;</span> interactive terminal
+                <button class="term-toggle" onclick="handleTerminalToggleBtn()" data-tooltip="Press '~' key to open">
+                    <span>$></span> interactive terminal
                 </button>
             </div>
 
@@ -580,13 +716,36 @@
             </div>
 
             <div class="terminal-container" id="terminal">
-                <div class="terminal-history" id="term-history">DexWindows Command Prompt [Version 10.0.22631.3007]
+                <div class="terminal-header">
+                    <div class="terminal-title">
+                        <span style="font-size:10px;">🪟</span> Command Prompt - dex@dexitry
+                    </div>
+                    <div class="terminal-controls">
+                        <span>─</span>
+                        <span>▢</span>
+                        <span onclick="toggleTerminal()">✕</span>
+                    </div>
+                </div>
+                <div class="terminal-body" onclick="document.getElementById('term-input').focus()">
+                    <div class="terminal-history" id="term-history">DexWindows Command Prompt [Version 10.0.22631.3007]
 (c) Dex Corporation. All rights reserved.
 
 Type "help" for a list of available commands.</div>
-                <div class="terminal-prompt-line">
-                    <span>C:\Users\dex\dexitry&gt;</span>
-                    <input type="text" class="terminal-input" id="term-input" autocomplete="off" spellcheck="false">
+                    
+                    <div class="taskmgr-graph-wrapper" id="graph-panel">
+                        <div class="graph-header">
+                            <span>Performance: Active Page Render Loop</span>
+                            <span id="graph-percentage">0% CPU Allocation</span>
+                        </div>
+                        <svg class="graph-svg">
+                            <path class="graph-path" id="graph-line" d="M 0 60 L 600 60"></path>
+                        </svg>
+                    </div>
+
+                    <div class="terminal-prompt-line">
+                        <span class="terminal-prompt-text">C:\Users\dex\dexitry></span>
+                        <input type="text" class="terminal-input" id="term-input" autocomplete="off" spellcheck="false">
+                    </div>
                 </div>
             </div>
             
@@ -594,7 +753,29 @@ Type "help" for a list of available commands.</div>
         </div>
     </div>
 
-    <div class="banner-shelf">
+    <div class="winver-modal" id="winver-box">
+        <div class="winver-header" id="winver-drag-zone">
+            <span>About Windows</span>
+            <span class="winver-close" onclick="closeWinver()">✕</span>
+        </div>
+        <div class="winver-content">
+            <div class="winver-logo">DexWindows 11</div>
+            <p style="color:#eeeeee; font-size:0.8rem; margin: 4px 0 12px 0; line-height:1.45;">
+                DexWindows Enterprise Premium<br>
+                Version 23H2 (OS Build 22631.3007)<br>
+                © Dex Corporation. All rights reserved.<br>
+            </p>
+            <div class="winver-divider"></div>
+            <p style="color:#aaaaaa; font-size:0.78rem; line-height:1.4; margin-bottom:18px;">
+                The DexWindows 11 Operating System and its UI modules are protected by trademark law and deep architectural IT infrastructure protocols.<br><br>
+                This license node is verified under provisions of total engineering allocation to:<br>
+                <span style="color:#fff; margin-left:2px;"><b>dex@dexitry.com</b></span>
+            </p>
+            <button class="winver-btn" onclick="closeWinver()">OK</button>
+        </div>
+    </div>
+
+    <div class="banner-shelf" id="shelf-frame">
         <div class="banner-unit">
             <a href="/" id="banner-link">
                 <img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" alt="dexitry" class="my-banner-img">
@@ -610,7 +791,195 @@ Type "help" for a list of available commands.</div>
     </div>
 
     <script>
-        const DISCORD_ID = '989844678536986624';
+const DISCORD_ID = '989844678536986624';
+
+        // SHELL PROTECTION PARAMETERS
+        let terminalLocked = false;
+        let bypassObserver = false; 
+        let domObserver = null; 
+
+        // ANTI-DOM-TAMPERING GUARDIAN SUITE
+        function lockDownAndReload() {
+            if (domObserver) domObserver.disconnect();
+            
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(130, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } catch(e) {}
+
+            document.body.innerHTML = "";
+            const ts = document.createElement('div');
+            ts.id = "tamper-screen";
+            ts.style.display = "flex";
+            ts.style.position = "fixed";
+            ts.style.inset = "0";
+            ts.style.background = "#000000";
+            ts.style.color = "#ffffff";
+            ts.style.fontFamily = "monospace";
+            ts.style.fontSize = "1.4rem";
+            ts.style.alignItems = "center";
+            ts.style.justifyContent = "center";
+            ts.innerText = "don't fucking do that shit here.";
+            document.body.appendChild(ts);
+            document.body.style.backgroundColor = "#000000";
+
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 3000);
+        }
+
+        function activateSecurityMatrix() {
+            domObserver = new MutationObserver((mutations) => {
+                if (bypassObserver) return;
+                
+                for (let mutation of mutations) {
+                    const target = mutation.target;
+                    
+                    // 1. Completely ignore safe interactive zones
+                    if (
+                        target.id === 'mouse-glow' || 
+                        target.id === 'term-input' || 
+                        target.id === 'term-history' || 
+                        target.classList.contains('terminal-body') || 
+                        target.id === 'graph-line' ||
+                        target.id === 'graph-percentage' ||
+                        target.id === 'hardware-telemetry' ||
+                        target.id === 'live-text' ||
+                        target.id === 'live-sub-text' ||
+                        target.id === 'status-dot' ||
+                        target.id === 'status-sub-line' ||
+                        target.id === 'spotify-art' ||
+                        target.id === 'sys-clock' ||
+                        target.closest('.live-status-container') || 
+                        target.closest('#toast-stack') ||
+                        target.closest('#specs') ||           // Ignores toggles inside specs panel
+                        target.closest('.spec-toggle-btn')   // Ignores double clicks/toggles on specs button
+                    ) {
+                        continue;
+                    }
+                    
+                    // 2. Only panic if attributes are altered on the core body layout or elements are deleted/inserted maliciously
+                    if (mutation.type === 'childList' || (mutation.type === 'attributes' && target === document.body)) {
+                        lockDownAndReload();
+                        break;
+                    }
+                }
+            });
+
+            domObserver.observe(document.body, {
+                attributes: true,
+                childList: true,
+                subtree: true,
+                characterData: false // Stops text selection/highlighting from tripping the wire
+            });
+        }
+
+        // LIVE BARE-METAL HARDWARE DIAGNOSTIC ENGINE (POST SEQUENCE)
+        const bootLogs = [
+            "DEX-BIOS ver 4.20.69 - Build Constraints Resolved 2026",
+            "Copyright (C) Dex Hardware Engineering Corp.\n",
+            "Initializing PCI Express Root Complex... OK",
+            "Probing System SMBus Controller Matrix...",
+            "Detecting Physical Microprocessor Architecture...",
+            "CPU: AMD Ryzen 5 5600X 6-Core Processor (3.70 GHz Base Clock)",
+            "L1 Cache: 384 KB / L2 Cache: 3 MB / L3 Cache: 32 MB Unified\n",
+            "Validating Memory Allocation Map...",
+            "Testing 32698 MB DDR4 Synchronous DRAM @ 3200MHz... OK (Pass)",
+            "Mapping System NVMe Block storage channels...",
+            "Target 0: 1 TB KIOXIA High-Performance NVMe SSD [Boot Device Node]",
+            "Target 1: 250 GB Samsung EVO Solid State Drive Array [Extended Pool]\n",
+            "Enumerating Dedicated Hardware Display Subsystems...",
+            "GPU 0: NVIDIA GeForce RTX 4060 [PCIe x16 Gen4 Mode Active]",
+            "GPU 1: AMD Radeon RX 7600 XT [Resource Pool Extension Layer Allocated]",
+            "VRAM Status: Cross-brand donor topology engaged successfully.",
+            "Total Video Allocation: 16384 MB Discrete Infrastructure Pool.\n",
+            "ACPI: Power Rails verified. +12V Rail: 12.06V / +5V Rail: 5.02V",
+            "Ethernet Controller: Realtek Gigabit LAN Node Link UP (1000 Mbps Full Duplex)",
+            "All hardware platforms verified. Running NT Kernel execution thread...",
+            "Loading DexWindows 11 Enterprise Dark Profile UI Environment...\n",
+            "READY."
+        ];
+
+        function playPostBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(850, audioCtx.currentTime); 
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e) {}
+        }
+
+        function runHardwarePOST() {
+            bypassObserver = true;
+            const container = document.getElementById('bios-loader');
+            const mainContent = document.getElementById('main-content');
+            const bgFrame = document.getElementById('bg-frame');
+            const shelfFrame = document.getElementById('shelf-frame');
+            
+            container.style.display = 'flex';
+            mainContent.style.opacity = '0';
+            bgFrame.style.opacity = '0';
+            shelfFrame.style.opacity = '0';
+            container.innerHTML = "";
+
+            let logIndex = 0;
+
+            function printLogLine() {
+                if (logIndex < bootLogs.length) {
+                    container.innerHTML += bootLogs[logIndex] + "\n";
+                    container.scrollTop = container.scrollHeight;
+                    logIndex++;
+                    
+                    let delay = Math.random() * 120 + 40;
+                    if (bootLogs[logIndex - 1].includes("Testing") || bootLogs[logIndex - 1].includes("Enumerating")) {
+                        delay = 450; 
+                    }
+                    setTimeout(printLogLine, delay);
+                } else {
+                    setTimeout(() => {
+                        playPostBeep();
+                        setTimeout(() => {
+                            container.style.transition = "opacity 0.4s ease";
+                            container.style.opacity = "0";
+                            setTimeout(() => {
+                                container.style.display = "none";
+                                mainContent.style.opacity = "1";
+                                bgFrame.style.opacity = "1";
+                                shelfFrame.style.opacity = "1";
+                                bypassObserver = false;
+                                
+                                // Enable absolute lock after interface fades in completely
+                                setTimeout(activateSecurityMatrix, 600);
+                            }, 400);
+                        }, 300);
+                    }, 500);
+                }
+            }
+            setTimeout(printLogLine, 200);
+        }
+
+        window.addEventListener('DOMContentLoaded', runHardwarePOST);
+
+        const splashes = [
+            "i tend to do hardware-related shit!",
+            "Wrangling unemployment since 2025!"
+        ];
+        document.getElementById('splash').innerText = splashes[Math.floor(Math.random() * splashes.length)];
 
         const glow = document.getElementById('mouse-glow');
         window.addEventListener('mousemove', (e) => {
@@ -619,80 +988,486 @@ Type "help" for a list of available commands.</div>
         });
 
         function updateClock() {
+            bypassObserver = true;
             const now = new Date();
             const timeStr = now.toTimeString().split(' ')[0];
             document.getElementById('sys-clock').innerText = `SYS_TIME: ${timeStr}`;
+            bypassObserver = false;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
         function toggleSpecs(btn) {
+            bypassObserver = true;
             btn.classList.toggle('open');
             document.getElementById('specs').classList.toggle('open');
+            setTimeout(() => { bypassObserver = false; }, 50);
+        }
+
+        function triggerSecurityError() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {}
+            
+            triggerWindowsToast("ACCESS DENIED", "Terminal shell under lockdown. Sudo commands are unauthorized.", "SECURITY");
+        }
+
+        function handleTerminalToggleBtn() {
+            if (terminalLocked) {
+                triggerSecurityError();
+                return;
+            }
+            toggleTerminal();
         }
 
         function toggleTerminal() {
+            if (terminalLocked) return;
+            bypassObserver = true;
             const term = document.getElementById('terminal');
             term.classList.toggle('open');
             if(term.classList.contains('open')) {
-                setTimeout(() => document.getElementById('term-input').focus(), 50);
+                setTimeout(() => {
+                    document.getElementById('term-input').focus();
+                    bypassObserver = false;
+                }, 50);
+            } else {
+                bypassObserver = false;
             }
+        }
+
+        function closeWinver() { 
+            bypassObserver = true;
+            document.getElementById('winver-box').style.display = 'none'; 
+            setTimeout(() => { bypassObserver = false; }, 50);
         }
 
         window.addEventListener('keydown', (e) => {
             if (e.key === '`') {
                 e.preventDefault();
+                if (terminalLocked) {
+                    triggerSecurityError();
+                    return;
+                }
                 toggleTerminal();
             }
         });
 
+        const winverBox = document.getElementById('winver-box');
+        const dragZone = document.getElementById('winver-drag-zone');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        dragZone.addEventListener('mousedown', (e) => {
+            if(e.target.classList.contains('winver-close')) return;
+            isDragging = true;
+            bypassObserver = true; 
+            const rect = winverBox.getBoundingClientRect();
+            winverBox.style.transform = 'none';
+            winverBox.style.left = rect.left + 'px';
+            winverBox.style.top = rect.top + 'px';
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            winverBox.style.left = (e.clientX - offsetX) + 'px';
+            winverBox.style.top = (e.clientY - offsetY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => { 
+            if(isDragging) {
+                isDragging = false; 
+                setTimeout(() => { bypassObserver = false; }, 50);
+            }
+        });
+
+        function triggerWindowsToast(title, desc, tag = "HW_MON") {
+            bypassObserver = true;
+            const stack = document.getElementById('toast-stack');
+            const toast = document.createElement('div');
+            toast.className = 'win-toast';
+            if (tag === "SECURITY") {
+                toast.style.borderLeft = "3px solid #f23f43";
+            }
+            toast.innerHTML = `
+                <div class="toast-icon" style="${tag === 'SECURITY' ? 'color:#f23f43;' : ''}">[${tag}]</div>
+                <div class="toast-body">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-desc">${desc}</div>
+                </div>
+            `;
+            stack.appendChild(toast);
+            
+            if (tag !== "SECURITY") {
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'square'; 
+                    osc.frequency.setValueAtTime(1200, audioCtx.currentTime); 
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                    
+                    setTimeout(() => {
+                        const osc2 = audioCtx.createOscillator();
+                        const gain2 = audioCtx.createGain();
+                        osc2.type = 'square';
+                        osc2.frequency.setValueAtTime(1500, audioCtx.currentTime);
+                        gain2.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                        gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+                        osc2.connect(gain2);
+                        gain2.connect(audioCtx.destination);
+                        osc2.start();
+                        osc2.stop(audioCtx.currentTime + 0.08);
+                    }, 50);
+                } catch(e) {}
+            }
+
+            setTimeout(() => toast.classList.add('show'), 50);
+            setTimeout(() => {
+                bypassObserver = true;
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    toast.remove(); 
+                    bypassObserver = false;
+                }, 400);
+            }, 4000);
+            
+            setTimeout(() => { bypassObserver = false; }, 60);
+        }
+
+        let performanceInterval = null;
+        let graphPoints = Array(40).fill(60);
+
+        function updatePerformanceGraph() {
+            const panel = document.getElementById('graph-panel');
+            if (panel.style.display !== 'flex' && panel.style.display !== 'block') return;
+
+            const frameStart = performance.now();
+            requestAnimationFrame(() => {
+                const latency = performance.now() - frameStart;
+                let simulatedLoad = Math.min(100, Math.max(2, Math.round(latency * 15 + Math.random() * 12)));
+                
+                if(performance.memory) {
+                    const memUsed = performance.memory.usedJSHeapSize / performance.memory.jsHeapSizeLimit;
+                    simulatedLoad = Math.min(100, Math.round(simulatedLoad + (memUsed * 20)));
+                }
+
+                document.getElementById('graph-percentage').innerText = `${simulatedLoad}% CPU Allocation`;
+
+                graphPoints.shift();
+                const calculatedY = 60 - ((simulatedLoad / 100) * 55);
+                graphPoints.push(calculatedY);
+
+                let pathData = "M 0 " + graphPoints[0];
+                const segmentWidth = 600 / 39;
+                for (let i = 1; i < 40; i++) {
+                    pathData += ` L ${i * segmentWidth} ${graphPoints[i]}`;
+                }
+                document.getElementById('graph-line').setAttribute('d', pathData);
+            });
+        }
+
         const termInput = document.getElementById('term-input');
         const termHistory = document.getElementById('term-history');
+        const termBody = document.querySelector('.terminal-body');
         
-        termInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const cmd = termInput.value.trim().toLowerCase();
-                let reply = `\nC:\\Users\\dex\\dexitry>${termInput.value}\n`;
+        let commandHistory = [];
+        let historyIndex = -1;
+        const validCommands = ['help', 'sysinfo', 'whoami', 'dxdiag', 'socials', 'winver', 'tree', 'funny', 'taskmgr', 'perf', 'reboot', 'cls', 'clear', 'exit', 'ping', 'xarhs', 'kyriakos', 'peble', 'sudo'];
+
+        termInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (commandHistory.length > 0 && historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    termInput.value = commandHistory[commandHistory.length - 1 - historyIndex];
+                }
+            } 
+            else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    termInput.value = commandHistory[commandHistory.length - 1 - historyIndex];
+                } else if (historyIndex === 0) {
+                    historyIndex = -1;
+                    termInput.value = '';
+                }
+            }
+            else if (e.key === 'Tab') {
+                e.preventDefault();
+                const currentInput = termInput.value.trim().toLowerCase();
+                if (currentInput.length > 0) {
+                    const match = validCommands.find(cmd => cmd.startsWith(currentInput));
+                    if (match) termInput.value = match;
+                }
+            }
+            else if (e.key === 'Enter') {
+                const rawInput = termInput.value;
+                const cmd = rawInput.trim().toLowerCase();
+                let reply = `\nC:\\Users\\dex\\dexitry>${rawInput}\n`;
+
+                if (rawInput.trim() !== '') {
+                    commandHistory.push(rawInput);
+                }
+                historyIndex = -1;
 
                 if (cmd === 'help') {
-                    reply += "For more information on a specific command, type HELP command-name\n\nHELP         Provides Help information for system utilities.\nSYSTEMINFO   Displays machine environment variables and hardware properties.\nCLS          Clears the screen.\nEXIT         Exits the interactive prompt window.";
-                } else if (cmd === 'systeminfo') {
-                    reply += "OS Name:                   DexWindows 11 Enterprise\nOS Version:                10.0.22631 N/A Build 22631\nSystem Owner:              dex\\dexitry\nProcessor(s):              Ryzen 5 5600X\nTotal Physical Memory:     32,698 MB\nGraphics Hardware:         RTX 4060 + RX 7600 XT\nPrimary Drive Config:      1 TB KIOXIA NVMe SSD\nCurrent Status:            Wrangling unemployment";
-                } else if (cmd === 'cls') {
+                    reply += "For more information on a specific tool, look up standard NT manuals.\n\n" +
+                             "HELP           Provides info map for prompt variables.\n" +
+                             "SYSINFO     Displays detailed machine software and hardware profiles.\n" +
+                             "WHOAMI         Outputs current logged-on network user description data.\n" +
+                             "DXDIAG         Outputs system graphic diagnostics aesthetic block.\n" +
+                             "SOCIALS        Returns hyperlinked communication matrix URLs.\n" +
+                             "WINVER         Launches standalone version profile display UI.\n" +
+                             "TREE           Graphically displays the directory structure of a drive or path.\n" +
+                             "TASKMGR / PERF Launches live render-loop hardware graph metrics inline.\n" +
+                             "REBOOT         Triggers full cold-boot diagnostic motherboard POST script down.\n" +
+                             "FUNNY          This is a funny command, dont do it though\n" +
+                             "CLS / CLEAR    Clears active screen metrics.\n" +
+                             "EXIT           Exits the interactive cmd prompt layer.";
+                } 
+                else if (cmd === 'sysinfo') {
+                    const platform = navigator.userAgentData ? navigator.userAgentData.platform : "Windows Client";
+                    
+                    let netType = "Ethernet Connection";
+                    let netDownlink = "Gigabit Link (Optimized)";
+                    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                    
+                    if (conn) {
+                        if (conn.type && conn.type !== 'unknown') {
+                            netType = conn.type.charAt(0).toUpperCase() + conn.type.slice(1) + " Node";
+                        } else if (conn.effectiveType) {
+                            netType = conn.effectiveType.toUpperCase() === '4G' ? 'Ethernet / High-Speed WAN' : conn.effectiveType.toUpperCase();
+                        }
+                        if (conn.downlink) {
+                            netDownlink = conn.downlink + " Mbps";
+                        }
+                    }
+
+                    let batteryMetrics = "Desktop Node (Continuous AC Power)";
+                    if (navigator.getBattery) {
+                        try {
+                            const battery = await navigator.getBattery();
+                            const isFakeDesktopBattery = battery.level === 1 && battery.charging === true && battery.chargingTime === 0;
+                            if (!isFakeDesktopBattery) {
+                                const percent = Math.round(battery.level * 100);
+                                const status = battery.charging ? "Charging" : "Discharging";
+                                batteryMetrics = `${percent}% Profile Level [${status}]`;
+                            }
+                        } catch (err) {}
+                    }
+
+                    reply += "Host Name:                 DEX-WIZARD-RIG\n" +
+                             "OS Name:                   DexWindows 11 Enterprise Dark\n" +
+                             "OS Version:                10.0.22631 N/A Build 22631\n" +
+                             "Product ID:                00330-80000-00000-AA665\n" +
+                             "System Boot Time:          69 Days, 4 Hours, 20 Minutes\n" +
+                             "Processor(s):              Ryzen 5 5600X\n" +
+                             "Total Physical Memory:     32,698 MB\n" +
+                             "Client Architecture:       " + platform + "\n" +
+                             "Network Connection:        " + netType + " (" + netDownlink + ")\n" +
+                             "Power Infrastructure:      " + batteryMetrics + "\n" +
+                             "Current Status:            Wrangling unemployment";
+                } 
+                else if (cmd === 'whoami') {
+                    reply += "dex\\dexitry\n" +
+                             "Attributes: Former IT wizard, currently unemployed as hell.";
+                } 
+                else if (cmd === 'dxdiag') {
+                    reply += "------------\nSystem Devices\n------------\n" +
+                             "Card name: NVIDIA GeForce RTX 4060\n" +
+                             "Secondary Card: AMD Radeon RX 7600 XT\n" +
+                             "Role: Dedicated Memory Pool Extension / Ram Donor Node";
+                } 
+                else if (cmd === 'socials') {
+                    reply += "Steam:     <a href='https://steamcommunity.com/id/dexitry/' target='_blank'>dexitry</a>\n" +
+                             "Instagram: <a href='https://www.instagram.com/dexitry/' target='_blank'>dexitry</a>\n" +
+                             "osu!:      <a href='https://osu.ppy.sh/users/17459468/' target='_blank'>Dexitry</a>\n" +
+                             "Spotify:   <a href='https://open.spotify.com/user/g84n2zxcfwq9v7i8zi5d0n87p?si=e3ca4bde9e3b4932/' target='_blank'>Dhmo</a>";
+                } 
+                else if (cmd === 'winver') {
+                    bypassObserver = true;
+                    winverBox.style.transform = 'translate(-50%, -50%)';
+                    winverBox.style.left = '50%';
+                    winverBox.style.top = '40%';
+                    winverBox.style.display = 'block';
+                    reply += "Executing standalone dark version context window profile modal...";
+                    triggerWindowsToast("DIAGNOSTICS", "Launched Desktop Application Node: winver.exe", "EXEC");
+                    setTimeout(() => { bypassObserver = false; }, 50);
+                } 
+                else if (cmd === 'tree') {
+                    reply += "Folder PATH listing for volume DexSystem\n" +
+                             "C:.\n" +
+                             "├───Desktop\n" +
+                             "├───Documents\n" +
+                             "│   └───Server_Configs\n" +
+                             "├───Games\n" +
+                             "│   ├───osu!\n" +
+                             "│   └───League of Legends\n" +
+                             "└───Unemployment_Benefits";
+                }
+                else if (cmd === 'taskmgr' || cmd === 'perf') {
+                    bypassObserver = true;
+                    const panel = document.getElementById('graph-panel');
+                    panel.style.display = 'block';
+                    
+                    if (!document.getElementById('hardware-telemetry')) {
+                        const telemetryDiv = document.createElement('div');
+                        telemetryDiv.id = 'hardware-telemetry';
+                        telemetryDiv.style.cssText = "margin-top: 10px; padding: 8px; border: 1px solid #ffffff10; background: #050505; font-family: monospace; font-size: 0.78rem; color: #aaa; border-radius: 4px; line-height: 1.5;";
+                        panel.after(telemetryDiv);
+                    }
+
+                    reply += "Spawning hardware polling engine tracking component rails...\nType 'cls' or 'clear' to terminate active UI frame handles.";
+                    triggerWindowsToast("TELEMETRY LINKED", "Tracking live cross-brand VRAM pool & +12V rails.", "PERF");
+                    
+                    if(!performanceInterval) {
+                        performanceInterval = setInterval(() => {
+                            updatePerformanceGraph();
+                            
+                            const telemetry = document.getElementById('hardware-telemetry');
+                            if (telemetry) {
+                                const rtxPower = Math.floor(90 + Math.random() * 25);
+                                const rxPower = Math.floor(35 + Math.random() * 15);
+                                const cpuTemp = Math.floor(58 + Math.random() * 8);
+                                const vcore = (1.31 + Math.random() * 0.04).toFixed(3);
+                                const vramUsed = (4.2 + Math.random() * 0.8).toFixed(1);
+
+                                telemetry.innerHTML = `
+<span style="color: #ffb700; font-weight: bold;">[HARDWARE TELEMETRY NODES]</span>
+┌── CPU Core (Ryzen 5 5600X) ────────────────────────┐
+│ Temp: ${cpuTemp}°C  |  VCORE: ${vcore} V  |  P-State: Operational │
+├── Power Rails (+12V Matrix) ───────────────────────┤
+│ GPU 0 (RTX 4060):    [${'█'.repeat(Math.round(rtxPower/12))}${'░'.repeat(10 - Math.round(rtxPower/12))}] ${rtxPower}W / 115W TGP    │
+│ GPU 1 (RX 7600 XT):  [${'█'.repeat(Math.round(rxPower/6))}${'░'.repeat(10 - Math.round(rxPower/6))}] ${rxPower}W [Donor Mode]   │
+├── Shared Memory Architecture ──────────────────────┤
+│ Cross-VRAM Pool:     [████░░░░░░░░░░░░] ${vramUsed}GB / 16.0GB Alloc │
+└────────────────────────────────────────────────────┘`;
+                            }
+                        }, 200);
+                    }
+                    setTimeout(() => { bypassObserver = false; }, 50);
+                }
+                else if (cmd === 'reboot') {
+                    // 1. Cut the security wire so it doesn't panic during shutdown
+                    if (domObserver) {
+                        domObserver.disconnect();
+                        domObserver = null;
+                    }
+                    
+                    // 2. Clear terminal layout instantly
+                    termHistory.innerHTML = "\nSHUTTING DOWN CORE SUBSYSTEMS...\n";
+                    termInput.value = '';
+                    
+                    // 3. Play a low-frequency power-down tone
+                    try {
+                        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                        osc.frequency.linearRampToValueAtTime(60, audioCtx.currentTime + 0.6);
+                        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                        gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.6);
+                    } catch(e) {}
+
+                    // 4. Force a hard browser reload after the sound finishes
+                    setTimeout(() => {
+                        window.location.reload(true);
+                    }, 700);
+                    return;
+                }
+                else if (cmd === 'funny') {
+                    reply += "Deploying critical joke payload to local context browser layer...\nNever gonna give you up.";
+                    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+                }
+                else if (cmd === 'sudo') {
+                    reply += "'sudo' is not recognized as an internal or external command.\nWindows handles administrator authorization natively. Step off the shell, linux user.";
+                    termHistory.innerHTML += reply;
+                    termInput.value = '';
+                    
+                    setTimeout(() => {
+                        bypassObserver = true;
+                        const termElement = document.getElementById('terminal');
+                        termElement.classList.remove('open'); 
+                        terminalLocked = true;
+                        
+                        const blockDuration = Math.floor(Math.random() * 10001) + 10000;
+                        setTimeout(() => {
+                            terminalLocked = false;
+                        }, blockDuration);
+                        setTimeout(() => { bypassObserver = false; }, 50);
+                    }, 800);
+                    return;
+                }
+                else if (cmd === 'xarhs') { reply += "mhn vgaleis hubris re mpastardo"; } 
+                else if (cmd === 'kyriakos') { reply += "femboyenjoyer69"; } 
+                else if (cmd === 'peble') { reply += "AI PEBLE !!!!"; } 
+                else if (cmd == 'ping') {
+                    reply += "Pinging dexitry.com with 32 bytes of data:\nReply from 127.0.0.1: bytes=32 time<1ms TTL=128";
+                } else if (cmd === 'cls' || cmd === 'clear') {
+                    bypassObserver = true;
+                    document.getElementById('graph-panel').style.display = 'none';
+                    const telemetry = document.getElementById('hardware-telemetry');
+                    if (telemetry) telemetry.remove();
+                    clearInterval(performanceInterval);
+                    performanceInterval = null;
                     termHistory.innerHTML = '';
                     termInput.value = '';
+                    setTimeout(() => { bypassObserver = false; }, 50);
                     return;
                 } else if (cmd === 'exit') {
                     toggleTerminal();
                     termInput.value = '';
                     return;
                 } else if (cmd !== '') {
-                    reply += `'${cmd}' is not recognized as an internal or external command,\noperable program or batch file.`;
+                    reply += `'${cmd}' is not recognized as an internal or external command Program,\noperable program or batch file.`;
                 }
 
-                if (cmd !== '') {
-                    termHistory.innerHTML += reply;
-                    termHistory.scrollTop = termHistory.scrollHeight;
-                }
+                if (cmd !== '') termHistory.innerHTML += reply;
+                else termHistory.innerHTML += `\nC:\\Users\\dex\\dexitry>\n`;
+                
                 termInput.value = '';
+                setTimeout(() => { termBody.scrollTop = termBody.scrollHeight; }, 1);
             }
         });
 
         function copyBannerCode() {
             const currentUrl = window.location.origin;
             const embedString = `<a href="${currentUrl}" target="_blank"><img src="https://raw.githubusercontent.com/Dexitry/dexmainweb/main/bannerweb.webp" width="88" height="31" alt="dexitry"></a>`;
-            
             navigator.clipboard.writeText(embedString).then(() => {
                 const btn = document.getElementById('copy-btn');
-                btn.classList.add('copied');
-                btn.innerText = 'done!';
-                
-                setTimeout(() => {
-                    btn.innerText = 'copy';
-                    btn.classList.remove('copied');
+                bypassObserver = true;
+                btn.classList.add('copied'); btn.innerText = 'done!';
+                setTimeout(() => { 
+                    bypassObserver = true;
+                    btn.innerText = 'copy'; 
+                    btn.classList.remove('copied'); 
+                    setTimeout(() => { bypassObserver = false; }, 50);
                 }, 2200);
-            }).catch(err => {
-                console.error('Could not copy banner code:', err);
+                triggerWindowsToast("CLIPBOARD", "Banner link code block copied to hardware clipboard.", "SYS");
             });
         }
 
@@ -700,9 +1475,11 @@ Type "help" for a list of available commands.</div>
         const mainText = document.getElementById('live-text');
         const subLine = document.getElementById('status-sub-line');
         const subText = document.getElementById('live-sub-text');
+        const spotifyArt = document.getElementById('spotify-art');
 
         function renderPresence(data) {
             if (!data) return;
+            bypassObserver = true;
 
             dot.className = 'status-dot';
             subLine.style.display = 'none';
@@ -711,6 +1488,7 @@ Type "help" for a list of available commands.</div>
             if (data.discord_status === 'offline' || !data.discord_status) {
                 dot.classList.add('offline');
                 mainText.innerHTML = 'Status: <span>Offline</span>';
+                setTimeout(() => { bypassObserver = false; }, 50);
                 return;
             }
 
@@ -718,51 +1496,53 @@ Type "help" for a list of available commands.</div>
 
             let hasGame = false;
             let actualGameName = "";
-
             if (data.activities && data.activities.length > 0) {
                 const actualGame = data.activities.find(act => act.type === 0);
-                if (actualGame) {
-                    hasGame = true;
-                    actualGameName = actualGame.name;
-                }
+                if (actualGame) { hasGame = true; actualGameName = actualGame.name; }
             }
 
             const isListeningSpotify = data.listening_to_spotify && data.spotify;
 
-            if (hasGame && isListeningSpotify) {
-                mainText.innerHTML = `Playing: <span>${actualGameName}</span>`;
-                const songName = data.spotify.song || data.spotify.track || "Unknown Track";
+            if (isListeningSpotify) {
+                dot.className = 'status-dot spotify-active';
+                const songName = data.spotify.song || "Unknown Track";
                 const artistName = data.spotify.artist ? data.spotify.artist.split(';')[0] : "Unknown Artist";
                 
-                subText.innerHTML = `Background Music: <span>${songName}</span> - <span>${artistName}</span>`;
+                if (hasGame) {
+                    mainText.innerHTML = `Playing: <span>${actualGameName}</span>`;
+                } else {
+                    mainText.innerHTML = `Status: <span>Listening to Spotify</span>`;
+                }
+
+                if(data.spotify.album_art_url) {
+                    spotifyArt.src = data.spotify.album_art_url;
+                    spotifyArt.style.display = 'block';
+                } else {
+                    spotifyArt.style.display = 'none';
+                }
+                
+                subText.innerHTML = `<span>${songName}</span> by <span>${artistName}</span>`;
                 subLine.style.display = 'flex';
+                setTimeout(() => { bypassObserver = false; }, 50);
                 return;
             }
 
             if (hasGame) {
                 mainText.innerHTML = `Playing: <span>${actualGameName}</span>`;
-                return;
-            }
-
-            if (isListeningSpotify) {
-                dot.className = 'status-dot spotify-active'; 
-                const songName = data.spotify.song || data.spotify.track || "Unknown Track";
-                const artistName = data.spotify.artist ? data.spotify.artist.split(';')[0] : "Unknown Artist";
-                
-                mainText.innerHTML = `Listening to: <span>${songName}</span> by <span>${artistName}</span>`;
+                setTimeout(() => { bypassObserver = false; }, 50);
                 return;
             }
 
             let statusClean = data.discord_status;
             if (statusClean === 'dnd') statusClean = 'do not disturb';
             mainText.innerHTML = `Status: <span>${statusClean}</span>`;
+            setTimeout(() => { bypassObserver = false; }, 50);
         }
 
         function loadInitialPresence() {
             fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
                 .then(res => res.json())
-                .then(resData => { if (resData.success && resData.data) renderPresence(resData.data); })
-                .catch(err => console.log(err));
+                .then(resData => { if (resData.success && resData.data) renderPresence(resData.data); });
         }
 
         function initLanyardSocket() {
@@ -771,33 +1551,22 @@ Type "help" for a list of available commands.</div>
 
             ws.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
-
                 if (msg.op === 1) {
                     ws.send(JSON.stringify({ op: 2, d: { subscribe_to_ids: [DISCORD_ID] } }));
                     heartbeatInterval = setInterval(() => { ws.send(JSON.stringify({ op: 3 })); }, msg.d.heartbeat_interval);
                 }
-
                 if (msg.op === 0) {
-                    if (msg.t === 'INIT_STATE') {
-                        if (msg.d && msg.d[DISCORD_ID]) {
-                            renderPresence(msg.d[DISCORD_ID]);
-                        }
-                    } else if (msg.t === 'PRESENCE_UPDATE') {
-                        if (msg.d && msg.d.user_id === DISCORD_ID) {
-                            renderPresence(msg.d);
-                        }
+                    if (msg.t === 'INIT_STATE' && msg.d && msg.d[DISCORD_ID]) {
+                        renderPresence(msg.d[DISCORD_ID]);
+                    } else if (msg.t === 'PRESENCE_UPDATE' && msg.d && msg.d.user_id === DISCORD_ID) {
+                        renderPresence(msg.d);
                     }
                 }
             };
-
-            ws.onclose = () => { 
-                clearInterval(heartbeatInterval);
-                setTimeout(initLanyardSocket, 5000); 
-            };
+            ws.onclose = () => { clearInterval(heartbeatInterval); setTimeout(initLanyardSocket, 5000); };
         }
 
         loadInitialPresence();
         initLanyardSocket();
     </script>
-</body>
 </html>

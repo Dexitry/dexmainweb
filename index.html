@@ -1199,6 +1199,37 @@ const DISCORD_ID = '989844678536986624';
         let historyIndex = -1;
         const validCommands = ['help', 'sysinfo', 'whoami', 'dxdiag', 'socials', 'winver', 'tree', 'funny', 'taskmgr', 'perf', 'reboot', 'cls', 'clear', 'exit', 'ping', 'xarhs', 'kyriakos', 'peble', 'sudo'];
 
+        // INTERACTIVE DIRECTORY LOGIC
+        window.handleTreeClick = function(folder) {
+            bypassObserver = true;
+            const termHistory = document.getElementById('term-history');
+            const termBody = document.querySelector('.terminal-body');
+            
+            let output = `\nC:\\Users\\dex\\dexitry>cd ${folder}\n`;
+            
+            if (folder === 'Unemployment') {
+                output += "ACCESS DENIED: Insufficient funds. Please contact your local government office.\nStatus: Still wrangling.";
+                triggerWindowsToast("WARNING", "Attempted to access restricted financial node.", "SECURITY");
+            } else if (folder === 'osu') {
+                output += "Executing game core... \nJust kidding. Clicking circles is for the weak.";
+                window.open('https://osu.ppy.sh/users/17459468/', '_blank');
+            } else if (folder === 'League') {
+                output += "FATAL ERROR: Toxicity levels exceed safe hardware limits. Operation aborted.";
+            } else if (folder === 'Server_Configs') {
+                output += "Loading nginx.conf...\nPermission denied (publickey).";
+            } else {
+                output += `Directory '${folder}' is currently empty. Just like my wallet.`;
+            }
+            
+            // Append the result and reset the prompt line
+            termHistory.innerHTML += output + "\n\nC:\\Users\\dex\\dexitry>";
+            
+            setTimeout(() => { 
+                termBody.scrollTop = termBody.scrollHeight; 
+                bypassObserver = false;
+            }, 50);
+        };
+
         termInput.addEventListener('keydown', async (e) => {
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
@@ -1248,8 +1279,7 @@ const DISCORD_ID = '989844678536986624';
                              "REBOOT         Triggers full cold-boot diagnostic motherboard POST script down.\n" +
                              "FUNNY          This is a funny command, dont do it though\n" +
                              "CLS / CLEAR    Clears active screen metrics.\n" +
-                             "EXIT           Exits the interactive cmd prompt layer." +
-                             "PING           Ping the website.";
+                             "EXIT           Exits the interactive cmd prompt layer.";
                 } 
                 else if (cmd === 'sysinfo') {
                     const platform = navigator.userAgentData ? navigator.userAgentData.platform : "Windows Client";
@@ -1323,13 +1353,13 @@ const DISCORD_ID = '989844678536986624';
                 else if (cmd === 'tree') {
                     reply += "Folder PATH listing for volume DexSystem\n" +
                              "C:.\n" +
-                             "├───Desktop\n" +
-                             "├───Documents\n" +
-                             "│   └───Server_Configs\n" +
-                             "├───Games\n" +
-                             "│   ├───osu!\n" +
-                             "│   └───League of Legends\n" +
-                             "└───Unemployment_Benefits";
+                             "├───<span style='color:#58a6ff; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"Desktop\")'>Desktop</span>\n" +
+                             "├───<span style='color:#58a6ff; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"Documents\")'>Documents</span>\n" +
+                             "│   └───<span style='color:#58a6ff; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"Server_Configs\")'>Server_Configs</span>\n" +
+                             "├───<span style='color:#58a6ff; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"Games\")'>Games</span>\n" +
+                             "│   ├───<span style='color:#58a6ff; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"osu\")'>osu!</span>\n" +
+                             "│   └───<span style='color:#58a6ff; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"League\")'>League of Legends</span>\n" +
+                             "└───<span style='color:#f23f43; cursor:pointer; text-decoration:underline;' onclick='handleTreeClick(\"Unemployment\")'>Unemployment_Benefits</span>";
                 }
                 else if (cmd === 'taskmgr' || cmd === 'perf') {
                     bypassObserver = true;
@@ -1575,11 +1605,24 @@ const DISCORD_ID = '989844678536986624';
             ws.onclose = () => { clearInterval(heartbeatInterval); setTimeout(initLanyardSocket, 5000); };
         }
 
+        function fetchLanyardPresence() {
+            fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+                .then(res => res.json())
+                .then(resData => { 
+                    if (resData.success && resData.data) {
+                        renderPresence(resData.data); 
+                    }
+                })
+                .catch(err => {
+                    // Fails silently if offline so it doesn't clutter console or trip the guard
+                });
+        }
+
         // fetch presence when loading onto site
         fetchLanyardPresence();
         
         // 2. 3 second intervals cause landyard normally too gay, no offense
         setInterval(fetchLanyardPresence, 3000);
-        
+
     </script>
 </html>

@@ -1437,6 +1437,8 @@ const DISCORD_ID = '989844678536986624';
                     return;
                 }
                 else if (cmd === 'bsod') {
+                    triggerBSOD();
+                    return;
                     // 1. we cut security wire so it doesn't panic during the BSOD injection
                     if (domObserver) {
                         domObserver.disconnect();
@@ -1476,6 +1478,24 @@ const DISCORD_ID = '989844678536986624';
                     
                     return;
                 }
+                // KONAMI CODE LISTENER
+                const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+                let konamiIndex = 0;
+
+                document.addEventListener('keydown', (e) => {
+                    // Ignore case for 'A' and 'B' so it works if CapsLock is on
+                    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+
+                    if (key === konamiSequence[konamiIndex]) {
+                        konamiIndex++;
+                        if (konamiIndex === konamiSequence.length) {
+                            triggerBSOD();
+                            konamiIndex = 0; // Reset sequence
+                        }
+                    } else {
+                        konamiIndex = 0; // Reset if they mess up the combo
+                    }
+                });
                 else if (cmd === 'funny') {
                     reply += "Deploying critical joke payload to local context browser layer...\nNever gonna give you up.";
                     window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');

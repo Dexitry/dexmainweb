@@ -1575,7 +1575,10 @@ const DISCORD_ID = '989844678536986624';
             ws.onclose = () => { clearInterval(heartbeatInterval); setTimeout(initLanyardSocket, 5000); };
         }
 
-        loadInitialPresence();
-        initLanyardSocket();
+        // fetch presence when loading onto site
+        fetchLanyardPresence();
+        // 2. 3 second intervals cause landyard normally too gay, no offense
+        setInterval(fetchLanyardPresence, 3000);
+        
     </script>
 </html>

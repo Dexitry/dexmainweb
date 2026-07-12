@@ -1197,7 +1197,7 @@ const DISCORD_ID = '989844678536986624';
         
         let commandHistory = [];
         let historyIndex = -1;
-        const validCommands = ['help', 'sysinfo', 'whoami', 'dxdiag', 'socials', 'winver', 'tree', 'funny', 'taskmgr', 'perf', 'reboot', 'cls', 'clear', 'exit', 'ping', 'xarhs', 'kyriakos', 'peble', 'sudo'];
+        const validCommands = ['help', 'sysinfo', 'whoami', 'dxdiag', 'socials', 'winver', 'tree', 'funny', 'taskmgr', 'perf', 'reboot', 'cls', 'clear', 'exit', 'ping', 'xarhs', 'kyriakos', 'peble', 'sudo','bsod'];
 
         // INTERACTIVE DIRECTORY LOGIC
         window.handleTreeClick = function(folder) {
@@ -1434,6 +1434,46 @@ const DISCORD_ID = '989844678536986624';
                     setTimeout(() => {
                         window.location.reload(true);
                     }, 700);
+                    return;
+                }
+                else if (cmd === 'bsod') {
+                    // 1. we cut security wire so it doesn't panic during the BSOD injection
+                    if (domObserver) {
+                        domObserver.disconnect();
+                        domObserver = null;
+                    }
+                    
+                    // 2. wipe that shit rq
+                    document.body.innerHTML = '';
+                    document.body.style.backgroundColor = '#0078D7';
+                    
+                    const bsod = document.createElement('div');
+                    bsod.style.cssText = "position:fixed; inset:0; background:#0078D7; color:#fff; font-family:'Segoe UI', sans-serif; display:flex; flex-direction:column; justify-content:center; padding:10%; z-index:9999; cursor:none;";
+                    bsod.innerHTML = `
+                        <h1 style="font-size: 8rem; margin: 0 0 20px 0; font-weight: normal;">:(</h1>
+                        <h2 style="font-size: 2rem; font-weight: normal; margin-bottom: 20px;">Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.</h2>
+                        <p id="bsod-pct" style="font-size: 1.2rem;">0% complete</p>
+                        <br><br>
+                        <p style="font-size: 1rem; opacity: 0.8;">For more information about this issue and possible fixes, visit https://www.windows.com/stopcode<br><br>If you call a support person, give them this info:<br>Stop code: CRITICAL_PROCESS_DIED</p>
+                    `;
+                    document.body.appendChild(bsod);
+
+                    // 3. fake the dumb percentage counter to make it look like it's doing something
+                    let pct = 0;
+                    const pctEl = document.getElementById('bsod-pct');
+                    const interval = setInterval(() => {
+                        pct += Math.floor(Math.random() * 25) + 5;
+                        if (pct >= 100) {
+                            pct = 100;
+                            pctEl.innerText = `${pct}% complete`;
+                            clearInterval(interval);
+                            // 4. reload that mf after a short delay to simulate the BSOD restart
+                            setTimeout(() => window.location.reload(true), 1500);
+                        } else {
+                            pctEl.innerText = `${pct}% complete`;
+                        }
+                    }, 600);
+                    
                     return;
                 }
                 else if (cmd === 'funny') {

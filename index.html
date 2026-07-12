@@ -1478,24 +1478,6 @@ const DISCORD_ID = '989844678536986624';
                     
                     return;
                 }
-                // KONAMI CODE LISTENER
-                const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-                let konamiIndex = 0;
-
-                document.addEventListener('keydown', (e) => {
-                    // Ignore case for 'A' and 'B' so it works if CapsLock is on
-                    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-
-                    if (key === konamiSequence[konamiIndex]) {
-                        konamiIndex++;
-                        if (konamiIndex === konamiSequence.length) {
-                            triggerBSOD();
-                            konamiIndex = 0; // Reset sequence
-                        }
-                    } else {
-                        konamiIndex = 0; // Reset if they mess up the combo
-                    }
-                });
                 else if (cmd === 'funny') {
                     reply += "Deploying critical joke payload to local context browser layer...\nNever gonna give you up.";
                     window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
@@ -1664,7 +1646,26 @@ const DISCORD_ID = '989844678536986624';
             };
             ws.onclose = () => { clearInterval(heartbeatInterval); setTimeout(initLanyardSocket, 5000); };
         }
+        
+        // KONAMI CODE LISTENER
+                const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+                let konamiIndex = 0;
 
+                document.addEventListener('keydown', (e) => {
+                    // Ignore case for 'A' and 'B' so it works if CapsLock is on
+                    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+
+                    if (key === konamiSequence[konamiIndex]) {
+                        konamiIndex++;
+                        if (konamiIndex === konamiSequence.length) {
+                            triggerBSOD();
+                            konamiIndex = 0; // Reset sequence
+                        }
+                    } else {
+                        konamiIndex = 0; // Reset if they mess up the combo
+                    }
+                });
+                
         function fetchLanyardPresence() {
             fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
                 .then(res => res.json())
